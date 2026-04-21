@@ -5,8 +5,8 @@ import { RouterOutlet } from '@angular/router';
   selector: 'app-root',
   standalone: true,         // required if not declaring in NgModule
   imports: [RouterOutlet],
-  template: `<router-outlet></router-outlet>`,  // <- this renders Login/Dashboard
-  styleUrls: ['./app.css']
+  templateUrl: './app.html',
+  styleUrl: './app.css'
 })
 export class App {
   protected readonly title = signal('client');

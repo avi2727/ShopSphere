@@ -1,0 +1,119 @@
+<div class="landing-container">
+  <!-- Navigation bar -->
+  <nav class="navbar">
+    <div class="logo">Shop<span>Sphere</span></div>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#trending">Trending</a>
+      <a href="#stats">Impact</a>
+    </div>
+    <div class="nav-actions">
+      <button class="btn-text">Support</button>
+      <button class="btn-primary">Get Started</button>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <!-- <div class="hero-badge">NEW COLLECTION 2026</div> -->
+      <h1>Elevate Your <span>Lifestyle</span> With ShopSphere</h1>
+      <p>Discover the next generation of shopping. Curated luxury, seamless experience, and lightning-fast logistics tailored for you.</p>
+      <div class="hero-btns">
+        <button class="btn-cta">Shop Now <span>→</span></button>
+        <button class="btn-outline">View Collections</button>
+      </div>
+    </div>
+    <div class="hero-visual">
+       <!-- Dynamic background handled in CSS -->
+       <div class="floating-card c1">
+          <div class="card-icon">⚡</div>
+          <div class="card-text">Fast Delivery</div>
+       </div>
+       <div class="floating-card c2">
+          <div class="card-icon">💎</div>
+          <div class="card-text">Premium Quality</div>
+       </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="features" class="features">
+    <div class="section-header">
+      <h2>Why Choose <span>Us?</span></h2>
+      <p>We blend technology with elegance to redefine your shopping journey.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card" *ngFor="let feature of features">
+        <div class="feature-icon">{{feature.icon == 'polygon-outline' ? '💠' : feature.icon == 'send-outline' ? '🚀' : '🛡️'}}</div>
+        <h3>{{feature.title}}</h3>
+        <p>{{feature.description}}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trending Products Sneak Peek -->
+  <section id="trending" class="trending">
+    <div class="section-header">
+      <h2>Trending <span>Now</span></h2>
+      <p>A sneak peek at what's hot this season.</p>
+    </div>
+    <div class="products-grid">
+      <div class="product-card" *ngFor="let product of trendingProducts">
+        <div class="product-img">
+          <img [src]="product.image" alt="Product">
+          <div class="product-badge">Hot</div>
+        </div>
+        <div class="product-info">
+          <h3>{{product.name}}</h3>
+          <p class="price">${{product.price}}</p>
+          <button class="btn-add">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section id="stats" class="stats">
+    <div class="stat-item">
+      <span class="stat-num">50K+</span>
+      <span class="stat-label">Happy Customers</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">120+</span>
+      <span class="stat-label">Global Brands</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">24/7</span>
+      <span class="stat-label">Support</span>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-info">
+        <div class="logo">Shop<span>Sphere</span></div>
+        <p>Premium e-commerce platform for the modern era.</p>
+      </div>
+      <div class="footer-links">
+        <div class="link-col">
+          <h4>Company</h4>
+          <a href="#">About</a>
+          <a href="#">Terms</a>
+          <a href="#">Privacy</a>
+        </div>
+        <div class="link-col">
+          <h4>Social</h4>
+          <a href="#">Twitter</a>
+          <a href="#">Instagram</a>
+          <a href="#">LinkedIn</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2026 ShopSphere. All rights reserved.
+    </div>
+  </footer>
+</div>

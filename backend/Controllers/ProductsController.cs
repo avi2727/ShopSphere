@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ShopSphere.DTOs.Product;
 using MyDotNetApi.Data;
 using MyDotNetApi.Models;
 
@@ -15,21 +16,21 @@ namespace MyDotNetApi.Controllers
             _context = context;
         }
 
-        // GET: api/products
-        [HttpGet]
-        public IActionResult GetAll()
-        {
-            var products = _context.Products.ToList();
-            return Ok(products);
-        }
-
-        // POST: api/products
         [HttpPost]
-        public IActionResult Create(Product product)
+        public async Task<IActionResult> CreateProduct(CreateProductDto dto)
         {
+            var product = new Product
+            {
+                Name = dto.Name,
+                Price = dto.Price
+            };
+
             _context.Products.Add(product);
-            _context.SaveChanges();
+
+            await _context.SaveChangesAsync();
+
             return Ok(product);
         }
+        
     }
 }

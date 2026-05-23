@@ -1,3 +1,138 @@
-<h2>Welcome to the Dashboard!</h2>
-<p>You are successfully logged in.</p>
-<button (click)="logout()">Logout</button>
+<div class="dashboard-container">
+  <!-- Dashboard Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="logo">Shop<span>Sphere</span></div>
+    </div>
+    <nav class="sidebar-nav">
+      <a routerLink="/dashboard" class="nav-item active">
+        <span class="icon">📊</span> Dashboard
+      </a>
+      <a routerLink="/products" class="nav-item">
+        <span class="icon">📦</span> Products Catalog
+      </a>
+      <a class="nav-item disabled">
+        <span class="icon">🛒</span> Orders <span class="badge-soon">Soon</span>
+      </a>
+      <a class="nav-item disabled">
+        <span class="icon">📈</span> Analytics <span class="badge-soon">Soon</span>
+      </a>
+      <a class="nav-item disabled">
+        <span class="icon">⚙️</span> Settings
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <button (click)="logout()" class="btn-logout">
+        <span class="icon">🚪</span> Sign Out
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Panel -->
+  <div class="main-panel">
+    <!-- Header -->
+    <header class="panel-header">
+      <div class="header-left">
+        <h2>Enterprise <span>Cockpit</span></h2>
+        <p>Real-time analytics and inventory supervision.</p>
+      </div>
+      <div class="header-right">
+        <div class="user-profile">
+          <div class="user-avatar">👤</div>
+          <div class="user-info">
+            <span class="user-name">Manager</span>
+            <span class="user-role">{{ userEmail }}</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Metrics Row -->
+    <section class="metrics-grid">
+      <div class="metric-card" *ngFor="let stat of stats">
+        <div class="card-icon-wrapper">{{ stat.icon }}</div>
+        <div class="card-info">
+          <span class="card-label">{{ stat.label }}</span>
+          <span class="card-value">{{ stat.value }}</span>
+          <div class="card-trend" [ngClass]="{'positive': stat.isPositive, 'negative': !stat.isPositive}">
+            <span class="trend-num">{{ stat.change }}</span> vs last week
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Content Split Layout -->
+    <div class="split-grid">
+      <!-- Sales Chart Mockup using pure SVG for stunning responsive rendering without external JS dependencies -->
+      <div class="grid-card chart-card">
+        <div class="card-header">
+          <h3>Sales Performance</h3>
+          <span class="time-range">Weekly Trend</span>
+        </div>
+        <div class="chart-wrapper">
+          <svg viewBox="0 0 500 200" class="performance-chart">
+            <defs>
+              <linearGradient id="chart-glow" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.25"/>
+                <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0.0"/>
+              </linearGradient>
+            </defs>
+            <!-- Grid Lines -->
+            <line x1="0" y1="40" x2="500" y2="40" stroke="rgba(255,255,255,0.03)" stroke-width="1" />
+            <line x1="0" y1="90" x2="500" y2="90" stroke="rgba(255,255,255,0.03)" stroke-width="1" />
+            <line x1="0" y1="140" x2="500" y2="140" stroke="rgba(255,255,255,0.03)" stroke-width="1" />
+            
+            <!-- Area Fill -->
+            <path d="M 0,160 Q 100,80 200,120 T 400,60 L 500,100 L 500,200 L 0,200 Z" fill="url(#chart-glow)" />
+            
+            <!-- Spline Curve -->
+            <path d="M 0,160 Q 100,80 200,120 T 400,60 L 500,100" fill="none" stroke="url(#line-gradient)" stroke-width="3" stroke-linecap="round" />
+            
+            <linearGradient id="line-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#8b5cf6" />
+              <stop offset="100%" stop-color="#ec4899" />
+            </linearGradient>
+
+            <!-- Interactive Chart Nodes -->
+            <circle cx="200" cy="120" r="5" fill="#f8fafc" stroke="#8b5cf6" stroke-width="3" />
+            <circle cx="400" cy="60" r="5" fill="#f8fafc" stroke="#ec4899" stroke-width="3" />
+          </svg>
+          <!-- Chart Labels -->
+          <div class="chart-labels">
+            <span>Mon</span>
+            <span>Tue</span>
+            <span>Wed</span>
+            <span>Thu</span>
+            <span>Fri</span>
+            <span>Sat</span>
+            <span>Sun</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Transactions Ledger -->
+      <div class="grid-card table-card">
+        <div class="card-header">
+          <h3>Recent Operations</h3>
+          <button routerLink="/products" class="btn-link-action">Manage Products →</button>
+        </div>
+        <div class="ledger-list">
+          <div class="ledger-item" *ngFor="let order of recentOrders">
+            <div class="item-left">
+              <span class="order-id">{{ order.id }}</span>
+              <span class="customer-name">{{ order.customer }}</span>
+            </div>
+            <div class="item-center">
+              <span class="product-tag">{{ order.product }}</span>
+              <span class="item-date">{{ order.date }}</span>
+            </div>
+            <div class="item-right">
+              <span class="order-amount">${{ order.amount }}</span>
+              <span class="status-badge" [ngClass]="order.status.toLowerCase()">{{ order.status }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

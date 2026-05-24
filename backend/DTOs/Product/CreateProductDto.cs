@@ -6,4 +6,6 @@ namespace ShopSphere.DTOs.Product
 
         public decimal Price { get; set; }
     }
+
+    
 }

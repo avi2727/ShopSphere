@@ -1,15 +1,15 @@
 <div class="products-container">
   <!-- Navigation bar -->
   <nav class="navbar">
-    <div class="logo" routerLink="/">Shop<span>Sphere</span></div>
+    <div class="logo" routerLink="/" style="cursor: pointer;">Shop<span>Sphere</span></div>
     <div class="nav-links">
-      <a routerLink="/" class="nav-link">Home</a>
-      <a routerLink="/dashboard" class="nav-link">Dashboard</a>
-      <a routerLink="/products" class="nav-link active">Products</a>
+      <a routerLink="/">Home</a>
+      <a routerLink="/dashboard">Dashboard</a>
+      <a routerLink="/products" class="nav-link active">Catalog</a>
     </div>
     <div class="nav-actions">
       <button class="btn-text" routerLink="/">Support</button>
-      <button class="btn-primary" (click)="openAddModal()">+ Add Product</button>
+      <button class="btn-primary" (click)="openAddModal()" *ngIf="isAdmin()">+ Add Product</button>
     </div>
   </nav>
 
@@ -17,8 +17,11 @@
   <main class="main-content">
     <div class="page-header">
       <div class="title-section">
-        <h1>Product <span>Inventory</span></h1>
-        <p>Manage and monitor your catalog from a centralized glassmorphic console.</p>
+        <h1 *ngIf="isAdmin()">Laptop <span>Inventory</span></h1>
+        <h1 *ngIf="!isAdmin()">All <span>Laptops</span></h1>
+        
+        <p *ngIf="isAdmin()">Manage and supervise your catalog from a centralized cockpit console.</p>
+        <p *ngIf="!isAdmin()">Browse our premium, hand-picked laptop models curated for your workflow.</p>
       </div>
       <div class="actions-section">
         <div class="search-box">
@@ -35,9 +38,9 @@
           <thead>
             <tr>
               <th class="w-id">ID</th>
-              <th class="w-name">Product Name</th>
+              <th class="w-name">Laptop Name</th>
               <th class="w-price">Price</th>
-              <th class="w-actions">Actions</th>
+              <th class="w-actions">{{ isAdmin() ? 'Actions' : 'Details' }}</th>
             </tr>
           </thead>
           <tbody>
@@ -46,10 +49,10 @@
               <td colspan="4" class="empty-row-cell">
                 <div class="empty-state">
                   <div class="empty-icon">📦</div>
-                  <h3>No Products Found</h3>
-                  <p>Your filter did not match any products, or inventory is empty. Click "+ Add Product" to add a new
-                    one.</p>
-                  <button class="btn-cta-empty" (click)="openAddModal()">+ Add New Product</button>
+                  <h3>No Laptops Found</h3>
+                  <p *ngIf="isAdmin()">Your filter did not match any laptops, or inventory is empty. Click "+ Add Product" to add a new one.</p>
+                  <p *ngIf="!isAdmin()">We couldn't find any laptops matching your query. Try searching for other key terms.</p>
+                  <button class="btn-cta-empty" (click)="openAddModal()" *ngIf="isAdmin()">+ Add New Product</button>
                 </div>
               </td>
             </tr>
@@ -59,8 +62,16 @@
               <td class="product-name-cell">{{ product.name }}</td>
               <td class="price-cell">{{ product.price | currency }}</td>
               <td class="actions-cell">
-                <button class="btn-icon btn-edit" title="Edit" (click)="openEditModal(product)">✏️</button>
-                <button class="btn-icon btn-delete" title="Delete" (click)="deleteProduct(product.id)">🗑️</button>
+                <!-- Admin Operations -->
+                <ng-container *ngIf="isAdmin()">
+                  <button class="btn-icon btn-edit" title="Edit Specs" (click)="openEditModal(product)">✏️</button>
+                  <button class="btn-icon btn-delete" title="Delete Product" (click)="deleteProduct(product.id)">🗑️</button>
+                </ng-container>
+                
+                <!-- Regular Customer Operations -->
+                <ng-container *ngIf="!isAdmin()">
+                  <button class="btn-icon btn-edit" style="color: #7c3aed; background: rgba(124, 58, 237, 0.05); border-color: rgba(124, 58, 237, 0.15);" title="View Laptop Details" [routerLink]="['/products', product.id]">👁️</button>
+                </ng-container>
               </td>
             </tr>
           </tbody>
@@ -70,7 +81,7 @@
   </main>
 
   <!-- Add/Edit Glassmorphic Modal Layer -->
-  @if (isModalOpen()) {
+  @if (isModalOpen() && isAdmin()) {
   <div class="modal-overlay">
     <div class="modal-card" (click)="$event.stopPropagation()">
       <div class="modal-header">

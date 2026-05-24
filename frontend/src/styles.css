@@ -12,7 +12,7 @@ html, body {
   min-height: 100%;
   margin: 0;
   padding: 0;
-  background-color: #0a0a0c;
+  background-color: #f8fafc;
   overflow-x: hidden;
   scroll-behavior: smooth;
   /* Hide scrollbar for IE, Edge and Firefox */
@@ -27,5 +27,5 @@ html, body {
 
 body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  color: #f8fafc;
+  color: #0f172a;
 }

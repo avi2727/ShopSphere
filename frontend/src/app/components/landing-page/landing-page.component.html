@@ -4,12 +4,12 @@
     <div class="logo" routerLink="/" style="cursor: pointer;">Shop<span>Sphere</span></div>
     <div class="nav-links">
       <a href="#features">Features</a>
-      <a href="#trending">Trending</a>
+      <a href="#trending">Premium Laptops</a>
       <a href="#stats">Impact</a>
     </div>
     <div class="nav-actions">
       <button class="btn-text" routerLink="/login">Sign In</button>
-      <button class="btn-primary" routerLink="/products">Get Started</button>
+      <button class="btn-primary" routerLink="/products">Dashboard Console</button>
     </div>
   </nav>
 
@@ -17,23 +17,22 @@
   <section class="hero">
     <div class="hero-overlay"></div>
     <div class="hero-content">
-      <!-- <div class="hero-badge">NEW COLLECTION 2026</div> -->
-      <h1>Elevate Your <span>Lifestyle</span> With ShopSphere</h1>
-      <p>Discover the next generation of shopping. Curated luxury, seamless experience, and lightning-fast logistics tailored for you.</p>
+      <div class="hero-badge">NEW IN STOCK • 2026 EDITION</div>
+      <h1>The Ultimate <span>Laptops</span> for Creators & Pros</h1>
+      <p>Discover next-generation computing. High-performance gaming beasts, ultra-slim productivity thin-and-lights, and powerhouse mobile workstations curated for your workflow.</p>
       <div class="hero-btns">
-        <button class="btn-cta" routerLink="/products">Shop Now <span>→</span></button>
-        <button class="btn-outline">View Collections</button>
+        <button class="btn-cta" routerLink="/products">Browse Inventory <span>→</span></button>
+        <button class="btn-outline" (click)="trending.scrollIntoView({ behavior: 'smooth' })">View Offers</button>
       </div>
     </div>
     <div class="hero-visual">
-       <!-- Dynamic background handled in CSS -->
        <div class="floating-card c1">
           <div class="card-icon">⚡</div>
-          <div class="card-text">Fast Delivery</div>
+          <div class="card-text">Free Insured Shipping</div>
        </div>
        <div class="floating-card c2">
           <div class="card-icon">💎</div>
-          <div class="card-text">Premium Quality</div>
+          <div class="card-text">Official Brand Warranty</div>
        </div>
     </div>
   </section>
@@ -41,12 +40,12 @@
   <!-- Features Section -->
   <section id="features" class="features">
     <div class="section-header">
-      <h2>Why Choose <span>Us?</span></h2>
-      <p>We blend technology with elegance to redefine your shopping journey.</p>
+      <h2>Curated for <span>Performance</span></h2>
+      <p>We supply only high-tier, benchmarked configurations that meet the highest standards of computing.</p>
     </div>
     <div class="features-grid">
       <div class="feature-card" *ngFor="let feature of features">
-        <div class="feature-icon">{{feature.icon == 'polygon-outline' ? '💠' : feature.icon == 'send-outline' ? '🚀' : '🛡️'}}</div>
+        <div class="feature-icon">{{feature.icon == 'polygon-outline' ? '💻' : feature.icon == 'send-outline' ? '🚀' : '🛡️'}}</div>
         <h3>{{feature.title}}</h3>
         <p>{{feature.description}}</p>
       </div>
@@ -54,21 +53,22 @@
   </section>
 
   <!-- Trending Products Sneak Peek -->
-  <section id="trending" class="trending">
+  <section id="trending" #trending class="trending">
     <div class="section-header">
-      <h2>Trending <span>Now</span></h2>
-      <p>A sneak peek at what's hot this season.</p>
+      <h2>Trending <span>Laptops</span></h2>
+      <p>A sneak peek at the most demanded rigs and workstations right now.</p>
     </div>
     <div class="products-grid">
       <div class="product-card" *ngFor="let product of trendingProducts">
         <div class="product-img">
-          <img [src]="product.image" alt="Product">
-          <div class="product-badge">Hot</div>
+          <img [src]="product.image" alt="Laptop Preview">
+          <div class="product-badge">Top Choice</div>
         </div>
         <div class="product-info">
           <h3>{{product.name}}</h3>
+          <p class="specs">{{product.specs}}</p>
           <p class="price">${{product.price}}</p>
-          <button class="btn-add">Add to Cart</button>
+          <button class="btn-add" [routerLink]="['/products', product.id]">View Details</button>
         </div>
       </div>
     </div>
@@ -77,16 +77,16 @@
   <!-- Stats Section -->
   <section id="stats" class="stats">
     <div class="stat-item">
-      <span class="stat-num">50K+</span>
-      <span class="stat-label">Happy Customers</span>
+      <span class="stat-num">10K+</span>
+      <span class="stat-label">Laptops Delivered</span>
     </div>
     <div class="stat-item">
-      <span class="stat-num">120+</span>
-      <span class="stat-label">Global Brands</span>
+      <span class="stat-num">15+</span>
+      <span class="stat-label">Top Brands</span>
     </div>
     <div class="stat-item">
       <span class="stat-num">24/7</span>
-      <span class="stat-label">Support</span>
+      <span class="stat-label">Expert Support</span>
     </div>
   </section>
 
@@ -95,14 +95,14 @@
     <div class="footer-content">
       <div class="footer-info">
         <div class="logo">Shop<span>Sphere</span></div>
-        <p>Premium e-commerce platform for the modern era.</p>
+        <p>Premium online laptop storefront for the modern developer, gamer, and creator.</p>
       </div>
       <div class="footer-links">
         <div class="link-col">
-          <h4>Company</h4>
-          <a href="#">About</a>
-          <a href="#">Terms</a>
-          <a href="#">Privacy</a>
+          <h4>Store</h4>
+          <a href="#">Support</a>
+          <a href="#">Terms & Conditions</a>
+          <a href="#">Warranty Policies</a>
         </div>
         <div class="link-col">
           <h4>Social</h4>

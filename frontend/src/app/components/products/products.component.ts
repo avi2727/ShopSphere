@@ -23,6 +23,7 @@ export class ProductsComponent implements OnInit {
   isModalOpen = signal<boolean>(false);
   isEditing = signal<boolean>(false);
   formError = signal<string>('');
+  isAdmin = signal<boolean>(false);
 
   // Form mapping - standard object for clean ngModel bindings
   currentProduct = { id: 0, name: '', price: 0 };
@@ -41,9 +42,12 @@ export class ProductsComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadProducts();
+    const storedEmail = localStorage.getItem('userEmail') || '';
+    this.isAdmin.set(storedEmail.toLowerCase().includes('admin'));
   }
 
   openAddModal() {
+    if (!this.isAdmin()) return;
     this.isEditing.set(false);
     this.currentProduct = { id: 0, name: '', price: 0 };
     this.formError.set('');
@@ -51,6 +55,7 @@ export class ProductsComponent implements OnInit {
   }
 
   openEditModal(product: any) {
+    if (!this.isAdmin()) return;
     this.isEditing.set(true);
     this.currentProduct = { ...product }; // clone product
     this.formError.set('');
@@ -63,6 +68,8 @@ export class ProductsComponent implements OnInit {
   }
 
   saveProduct() {
+    if (!this.isAdmin()) return;
+
     if (!this.currentProduct.name || this.currentProduct.name.trim().length < 3) {
       this.formError.set('Product name must be at least 3 characters long.');
       return;
@@ -125,6 +132,7 @@ export class ProductsComponent implements OnInit {
   }
 
   deleteProduct(id: number) {
+    if (!this.isAdmin()) return;
     this.productService.deleteProduct(id).subscribe({
       next: () => {
         this.products.update(all => all.filter(p => p.id !== id));

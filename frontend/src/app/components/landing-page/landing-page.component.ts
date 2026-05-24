@@ -12,20 +12,50 @@ import { RouterLink } from '@angular/router';
 export class LandingPageComponent {
   features = [
     {
-      title: 'Premium Quality',
-      description: 'Hand-picked products that meet our highest standards of excellence.',
+      title: 'Next-Gen Hardware',
+      description: 'Hand-picked laptops featuring the latest Intel Core Ultra, Apple M3, and NVIDIA RTX graphics.',
       icon: 'polygon-outline'
     },
     {
-      title: 'Swift Delivery',
-      description: 'Global shipping network ensuring your orders arrive in record time.',
+      title: 'Swift Insured Shipping',
+      description: 'Safe, global delivery network ensuring your premium machine arrives in record time.',
       icon: 'send-outline'
     },
     {
-      title: 'Secure Shopping',
-      description: 'Military-grade encryption for all your transactions and data.',
+      title: 'Official Warranty',
+      description: 'Comprehensive 2-year warranty and dedicated 24/7 hardware tech support.',
       icon: 'shield-checkmark-outline'
     }
   ];
-  trendingProducts: any[] = [];
+
+  trendingProducts = [
+    {
+      id: 1,
+      name: 'MacBook Pro 16" (M3 Max, 64GB)',
+      price: '3,499.00',
+      image: 'assets/images/macbook_pro.png',
+      specs: 'M3 Max • 16" Liquid Retina XDR • 64GB Unified Memory • 1TB SSD'
+    },
+    {
+      id: 2,
+      name: 'ROG Zephyrus G16 (RTX 4090, OLED)',
+      price: '2,999.00',
+      image: 'assets/images/rog_zephyrus.png',
+      specs: 'Intel Core Ultra 9 • 16" QHD+ OLED 240Hz • 32GB LPDDR5X • 2TB SSD'
+    },
+    {
+      id: 3,
+      name: 'Dell XPS 14 (Core Ultra 7, RTX 4050)',
+      price: '1,999.00',
+      image: 'assets/images/dell_xps.png',
+      specs: 'Core Ultra 7 • 14.5" 3.2K OLED Touch • 16GB LPDDR5X • 512GB SSD'
+    },
+    {
+      id: 4,
+      name: 'ThinkPad X1 Carbon Gen 12',
+      price: '1,799.00',
+      image: 'assets/images/thinkpad_x1.png',
+      specs: 'Intel Core Ultra 7 • 14" WUXGA IPS • 32GB LPDDR5X • 1TB SSD'
+    }
+  ];
 }

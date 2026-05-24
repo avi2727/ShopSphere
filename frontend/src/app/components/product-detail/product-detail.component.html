@@ -1,0 +1,91 @@
+<div class="detail-container" *ngIf="!loading()">
+  <!-- Navigation bar (Matching site navbar) -->
+  <nav class="navbar">
+    <div class="logo" routerLink="/" style="cursor: pointer;">Shop<span>Sphere</span></div>
+    <div class="nav-links">
+      <a routerLink="/">Home</a>
+      <a routerLink="/products" class="active">Inventory</a>
+    </div>
+    <div class="nav-actions">
+      <button class="btn-text" routerLink="/login">Sign In</button>
+      <button class="btn-primary" routerLink="/products">Dashboard</button>
+    </div>
+  </nav>
+
+  <!-- Detail Page Main Panel -->
+  <main class="main-content" *ngIf="product() as item">
+    
+    <!-- Action Back Link -->
+    <div class="back-link-wrapper">
+      <a routerLink="/" class="btn-back">← Back to Catalog</a>
+    </div>
+
+    <div class="product-detail-layout">
+      <!-- Left side - High Resolution Image Showcase -->
+      <div class="showcase-card">
+        <div class="image-wrapper">
+          <img [src]="item.image" [alt]="item.name">
+        </div>
+        <div class="badge-stock" [class.out]="!item.inStock">
+          {{ item.inStock ? '● In Stock & Ready to Ship' : '● Temporarily Out of Stock' }}
+        </div>
+      </div>
+
+      <!-- Right side - Product specifications & ordering console -->
+      <div class="specs-console">
+        <div class="meta-brand">{{ item.brand }}</div>
+        <h1>{{ item.name }}</h1>
+        <p class="summary-specs">{{ item.specs }}</p>
+
+        <!-- Product Rating -->
+        <div class="rating-row">
+          <div class="stars">★★★★★</div>
+          <span class="rating-num">{{ item.rating }}</span>
+          <span class="reviews-count">({{ item.reviewsCount }} verified reviews)</span>
+        </div>
+
+        <hr class="separator">
+
+        <!-- Pricing Console -->
+        <div class="price-row">
+          <span class="price-symbol">$</span>
+          <span class="price-value">{{ item.price }}</span>
+          <span class="tax-tag">VAT Included</span>
+        </div>
+
+        <!-- Short Description -->
+        <p class="description-text">{{ item.description }}</p>
+
+        <!-- Transaction Buttons (Role-Based Dynamic Render) -->
+        <div class="action-buttons">
+          @if (isAdmin()) {
+            <button class="btn-cart" routerLink="/products">Edit Inventory</button>
+            <button class="btn-buy" routerLink="/dashboard">View Dashboard</button>
+          } @else {
+            <button class="btn-cart" (click)="addToCart()">Add to Shopping Cart</button>
+            <button class="btn-buy" (click)="addToCart()">Buy Now</button>
+          }
+        </div>
+
+        <hr class="separator">
+
+        <!-- Technical Specification Ledger -->
+        <div class="specifications-ledger">
+          <h3>Technical Specifications</h3>
+          <div class="specs-table">
+            <div class="spec-row" *ngFor="let spec of item.features">
+              <span class="spec-label">{{ spec.label }}</span>
+              <span class="spec-value">{{ spec.value }}</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Loader Spinner -->
+<div class="loader-overlay" *ngIf="loading()">
+  <div class="loader-spinner"></div>
+</div>

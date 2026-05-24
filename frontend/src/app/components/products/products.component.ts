@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
+import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -16,133 +16,108 @@ export class ProductsComponent implements OnInit {
   constructor(
     private productService: ProductService,
     private toastr: ToastrService,
-    private cdr: ChangeDetectorRef,
   ) { }
 
+  products = signal<any[]>([]);
+  searchQuery = signal<string>('');
+  isModalOpen = signal<boolean>(false);
+  isEditing = signal<boolean>(false);
+  formError = signal<string>('');
 
-  products: any[] = [];
+  // Form mapping - standard object for clean ngModel bindings
+  currentProduct = { id: 0, name: '', price: 0 };
+
+  // Computed signal for real-time search filtration
+  filteredProducts = computed(() => {
+    const query = this.searchQuery().toLowerCase().trim();
+    const allProducts = this.products();
+    if (!query) {
+      return allProducts;
+    }
+    return allProducts.filter(
+      (p) => p.name.toLowerCase().includes(query) || p.id.toString().includes(query),
+    );
+  });
 
   ngOnInit(): void {
     this.loadProducts();
   }
 
-  searchQuery = '';
-  isModalOpen = false;
-  isEditing = false;
-
-  // Model mapping
-  currentProduct = { id: 0, name: '', price: 0 };
-  formError = '';
-
-  // Getter for real-time search filtration
-  get filteredProducts(): any[] {
-    if (!this.searchQuery.trim()) {
-      return this.products;
-    }
-    const query = this.searchQuery.toLowerCase();
-    return this.products.filter(
-      (p) => p.name.toLowerCase().includes(query) || p.id.toString().includes(query),
-    );
-  }
-
   openAddModal() {
-    this.isEditing = false;
+    this.isEditing.set(false);
     this.currentProduct = { id: 0, name: '', price: 0 };
-    this.formError = '';
-    this.isModalOpen = true;
+    this.formError.set('');
+    this.isModalOpen.set(true);
   }
 
   openEditModal(product: any) {
-    this.isEditing = true;
+    this.isEditing.set(true);
     this.currentProduct = { ...product }; // clone product
-    this.formError = '';
-    this.isModalOpen = true;
+    this.formError.set('');
+    this.isModalOpen.set(true);
   }
 
   closeModal() {
-    this.isModalOpen = false;
-    this.formError = '';
-    this.cdr.detectChanges();
+    this.isModalOpen.set(false);
+    this.formError.set('');
   }
 
-
-
   saveProduct() {
-
     if (!this.currentProduct.name || this.currentProduct.name.trim().length < 3) {
-      this.formError = 'Product name must be at least 3 characters long.';
+      this.formError.set('Product name must be at least 3 characters long.');
       return;
     }
 
     if (this.currentProduct.price === null || this.currentProduct.price <= 0) {
-      this.formError = 'Please enter a positive price value greater than 0.';
+      this.formError.set('Please enter a positive price value greater than 0.');
       return;
     }
 
-    this.formError = '';
+    this.formError.set('');
 
     // EDIT
-    if (this.isEditing) {
-
+    if (this.isEditing()) {
       this.productService.updateProduct(this.currentProduct.id, this.currentProduct)
         .subscribe({
-
           next: (response: any) => {
-
-            const index = this.products.findIndex(
-              p => p.id === response.id
-            );
-
+            const index = this.products().findIndex(p => p.id === response.id);
             if (index !== -1) {
-              this.products[index] = response;
-              this.products = [...this.products];
+              const updatedList = [...this.products()];
+              updatedList[index] = response;
+              this.products.set(updatedList);
             }
-
             this.toastr.success('Product Updated Successfully');
-
             this.closeModal();
           },
-
           error: (error: any) => {
             console.log(error);
-            this.formError = 'Update failed';
+            this.formError.set('Update failed');
           }
         });
-
     }
-
     // CREATE
     else {
-
       this.productService.createProduct(this.currentProduct)
         .subscribe({
-
           next: (response: any) => {
-
-            this.products = [...this.products, response];
-
+            this.products.update(all => [...all, response]);
             this.toastr.success('Product Created Successfully');
-
             this.closeModal();
           },
-
           error: (error: any) => {
             console.log(error);
-            this.formError = 'Creation failed';
+            this.formError.set('Creation failed');
           }
         });
     }
   }
-
 
   loadProducts() {
     this.productService.getProducts().subscribe({
       next: (response: any) => {
         // API data products array me store
-        this.products = [...(response.$values || response)];
-        this.cdr.detectChanges(); // Force Angular to detect changes and render the loaded data
+        this.products.set([...(response.$values || response)]);
       },
-
       error: (error: any) => {
         console.log(error);
       }
@@ -152,9 +127,8 @@ export class ProductsComponent implements OnInit {
   deleteProduct(id: number) {
     this.productService.deleteProduct(id).subscribe({
       next: () => {
-        this.products = this.products.filter((p) => p.id !== id);
+        this.products.update(all => all.filter(p => p.id !== id));
         this.toastr.success('Deleted Successfully');
-        this.cdr.detectChanges();
       },
       error: (error: any) => {
         console.log(error);

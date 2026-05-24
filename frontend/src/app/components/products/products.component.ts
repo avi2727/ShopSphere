@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -12,14 +12,19 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './products.component.html',
   styleUrls: ['./products.component.css'],
 })
-export class ProductsComponent {
+export class ProductsComponent implements OnInit {
   constructor(
     private productService: ProductService,
     private toastr: ToastrService,
     private cdr: ChangeDetectorRef,
-  ) {}
+  ) { }
+
 
   products: any[] = [];
+
+  ngOnInit(): void {
+    this.loadProducts();
+  }
 
   searchQuery = '';
   isModalOpen = false;
@@ -60,8 +65,10 @@ export class ProductsComponent {
     this.cdr.detectChanges();
   }
 
+
+
   saveProduct() {
-  
+
     if (!this.currentProduct.name || this.currentProduct.name.trim().length < 3) {
       this.formError = 'Product name must be at least 3 characters long.';
       return;
@@ -74,31 +81,84 @@ export class ProductsComponent {
 
     this.formError = '';
 
-    this.productService.createProduct(this.currentProduct).subscribe({
+    // EDIT
+    if (this.isEditing) {
+
+      this.productService.updateProduct(this.currentProduct.id, this.currentProduct)
+        .subscribe({
+
+          next: (response: any) => {
+
+            const index = this.products.findIndex(
+              p => p.id === response.id
+            );
+
+            if (index !== -1) {
+              this.products[index] = response;
+              this.products = [...this.products];
+            }
+
+            this.toastr.success('Product Updated Successfully');
+
+            this.closeModal();
+          },
+
+          error: (error: any) => {
+            console.log(error);
+            this.formError = 'Update failed';
+          }
+        });
+
+    }
+
+    // CREATE
+    else {
+
+      this.productService.createProduct(this.currentProduct)
+        .subscribe({
+
+          next: (response: any) => {
+
+            this.products = [...this.products, response];
+
+            this.toastr.success('Product Created Successfully');
+
+            this.closeModal();
+          },
+
+          error: (error: any) => {
+            console.log(error);
+            this.formError = 'Creation failed';
+          }
+        });
+    }
+  }
+
+
+  loadProducts() {
+    this.productService.getProducts().subscribe({
       next: (response: any) => {
-        console.log('Product Created');
-        console.log(response);
-
-        // Close the modal first to prevent UI freezing
-        this.closeModal();
-
-        // Update state and show toastr in a new macro-task to avoid ExpressionChangedAfterItHasBeenCheckedError
-        setTimeout(() => {
-          this.products = [...this.products, response];
-          this.toastr.success('Product Created Successfully');
-          this.cdr.detectChanges();
-        }, 0);
+        // API data products array me store
+        this.products = [...(response.$values || response)];
+        this.cdr.detectChanges(); // Force Angular to detect changes and render the loaded data
       },
 
-      error: (error) => {
+      error: (error: any) => {
         console.log(error);
-        this.formError = 'Something went wrong';
-      },
+      }
     });
   }
 
   deleteProduct(id: number) {
-    // Immediate reactive filtration
-    this.products = this.products.filter((p) => p.id !== id);
+    this.productService.deleteProduct(id).subscribe({
+      next: () => {
+        this.products = this.products.filter((p) => p.id !== id);
+        this.toastr.success('Deleted Successfully');
+        this.cdr.detectChanges();
+      },
+      error: (error: any) => {
+        console.log(error);
+      }
+    });
   }
 }

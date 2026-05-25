@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -11,14 +12,19 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
+
   email = '';
   password = '';
   errorMessage = '';
   isLoading = false;
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private authService: AuthService
+  ) {}
 
   onLogin() {
+
     if (!this.email || !this.password) {
       this.errorMessage = 'Please enter both email and password.';
       return;
@@ -27,14 +33,30 @@ export class LoginComponent {
     this.isLoading = true;
     this.errorMessage = '';
 
-    // Simulate network latency of 800ms
-    setTimeout(() => {
-      this.isLoading = false;
-      // Store a mock session token
-      localStorage.setItem('token', 'mock-jwt-token-123456');
-      localStorage.setItem('userEmail', this.email);
-      // Route directly to dashboard
-      this.router.navigate(['/dashboard']);
-    }, 800);
+    const user = {
+      username: this.email,
+      password: this.password
+    };
+
+    this.authService.login(user).subscribe({
+      next: (response) => {
+
+        // ✅ STORE JWT TOKEN
+        localStorage.setItem('token', response.token);
+
+        // optional user data
+        localStorage.setItem('userEmail', this.email);
+
+        this.isLoading = false;
+
+        // redirect to dashboard
+        this.router.navigate(['/dashboard']);
+      },
+
+      error: () => {
+        this.isLoading = false;
+        this.errorMessage = 'Invalid credentials';
+      }
+    });
   }
 }

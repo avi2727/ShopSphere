@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../services/auth.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-register',
@@ -19,7 +21,7 @@ export class RegisterComponent {
   successMessage = '';
   isLoading = false;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private authService: AuthService, private toastr: ToastrService) { }
 
   onRegister() {
     if (!this.name || !this.email || !this.password) {
@@ -33,7 +35,7 @@ export class RegisterComponent {
     }
 
     if (!this.agreeTerms) {
-      this.errorMessage = 'You must agree to the Terms of Service & Privacy Policy.';
+      this.errorMessage = 'You must agree to the Terms.';
       return;
     }
 
@@ -41,17 +43,28 @@ export class RegisterComponent {
     this.errorMessage = '';
     this.successMessage = '';
 
-    // Simulate network registration delay of 1s
-    setTimeout(() => {
-      this.isLoading = false;
-      this.successMessage = 'Registration successful! Redirecting to login...';
-      
-      // Store registering user info locally to simulate sign-up persistence
-      localStorage.setItem('registeredUser', JSON.stringify({ name: this.name, email: this.email }));
+    const payload = {
+      username: this.email,   // IMPORTANT mapping
+      password: this.password
+    };
 
-      setTimeout(() => {
-        this.router.navigate(['/login']);
-      }, 1500);
-    }, 1000);
+    this.authService.register(payload).subscribe({
+      next: (res: any) => {
+        this.isLoading = false;
+        this.errorMessage = '';
+        this.successMessage = res.message || 'Registration successful!';
+        this.toastr.success(res.message || 'Registration successful!');
+        setTimeout(() => {
+          this.router.navigate(['/login']);
+        }, 1500);
+      },
+      error: (err: any) => {
+        this.isLoading = false;
+        const msg = err?.error?.message || err?.error || 'Registration failed';
+        this.errorMessage = msg;
+        this.successMessage = '';
+        this.toastr.error(msg);
+      }
+    });
   }
 }

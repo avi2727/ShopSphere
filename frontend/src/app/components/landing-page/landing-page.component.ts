@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-landing-page',
@@ -10,6 +11,7 @@ import { RouterLink } from '@angular/router';
   styleUrl: './landing-page.component.css'
 })
 export class LandingPageComponent {
+  cartService = inject(CartService);
   features = [
     {
       title: 'Next-Gen Hardware',

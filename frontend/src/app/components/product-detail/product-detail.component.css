@@ -411,3 +411,38 @@
   .action-buttons { flex-direction: column; }
   .btn-buy { width: 100%; }
 }
+
+.btn-cart-nav {
+  position: relative;
+  background: rgba(124, 58, 237, 0.05);
+  border: 1px solid rgba(124, 58, 237, 0.15);
+  color: #7c3aed;
+  padding: 0.7rem 1.2rem;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-cart-nav:hover {
+  background: rgba(124, 58, 237, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.1);
+}
+
+.cart-badge {
+  background: #db2777;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.15rem 0.45rem;
+  border-radius: 99px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  box-shadow: 0 2px 5px rgba(219, 39, 119, 0.3);
+}

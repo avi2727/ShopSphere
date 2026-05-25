@@ -1,0 +1,74 @@
+<div class="success-container">
+  <!-- Navigation bar (Matching navbar) -->
+  <nav class="navbar">
+    <div class="logo" routerLink="/" style="cursor: pointer;">Shop<span>Sphere</span></div>
+    <div class="nav-links">
+      <a routerLink="/">Home</a>
+      <a routerLink="/products" class="active">Catalog</a>
+    </div>
+    <div class="nav-actions">
+      <button class="btn-text" routerLink="/login">Sign In</button>
+      <button class="btn-cart-nav" routerLink="/cart" *ngIf="!isAdmin()">
+        🛒 Cart <span class="cart-badge" *ngIf="cartService.cartCount() > 0">{{ cartService.cartCount() }}</span>
+      </button>
+      <button class="btn-primary" routerLink="/products">Dashboard</button>
+    </div>
+  </nav>
+
+  <!-- Main Shopping Panel -->
+  <main class="main-content" *ngIf="invoice() as data">
+    <div class="success-card">
+      <!-- Success Icon Glimmer -->
+      <div class="check-wrapper">
+        <span class="check-icon">✓</span>
+      </div>
+
+      <h2>Order Confirmed!</h2>
+      <p class="subtitle">Thank you for your purchase. Your premium computing gear is already being packaged!</p>
+
+      <!-- Invoice Details Ledger -->
+      <div class="invoice-details">
+        <div class="detail-row">
+          <span>Order Reference</span>
+          <span class="highlight">{{ data.orderId }}</span>
+        </div>
+        <div class="detail-row">
+          <span>Logistics Carrier</span>
+          <span>DHL Express Insured</span>
+        </div>
+        <div class="detail-row">
+          <span>Tracking ID</span>
+          <span class="tracking">{{ data.trackingNumber }}</span>
+        </div>
+        <div class="detail-row">
+          <span>Estimated Delivery</span>
+          <span class="delivery">{{ estimatedDelivery() }}</span>
+        </div>
+      </div>
+
+      <!-- Itemized Laptop Summary -->
+      <div class="items-summary">
+        <h3>Purchased Hardware</h3>
+        <div class="items-list">
+          <div class="item-row" *ngFor="let item of data.items">
+            <div class="item-meta">
+              <span class="item-name">{{ item.name }}</span>
+              <span class="item-qty">Qty: {{ item.quantity }}</span>
+            </div>
+            <span class="item-price">{{ (item.price * item.quantity) | currency }}</span>
+          </div>
+        </div>
+        <div class="total-row">
+          <span>Total Charged</span>
+          <span>{{ data.total | currency }}</span>
+        </div>
+      </div>
+
+      <!-- Navigation Actions -->
+      <div class="action-buttons">
+        <button routerLink="/" class="btn-cta">Shop More Laptops</button>
+        <button routerLink="/dashboard" class="btn-outline">View My Portal</button>
+      </div>
+    </div>
+  </main>
+</div>

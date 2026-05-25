@@ -9,6 +9,9 @@
     </div>
     <div class="nav-actions">
       <button class="btn-text" routerLink="/login">Sign In</button>
+      <button class="btn-cart-nav" routerLink="/cart">
+        🛒 Cart <span class="cart-badge" *ngIf="cartService.cartCount() > 0">{{ cartService.cartCount() }}</span>
+      </button>
       <button class="btn-primary" routerLink="/products">Dashboard Console</button>
     </div>
   </nav>

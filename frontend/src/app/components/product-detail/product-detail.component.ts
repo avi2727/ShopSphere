@@ -1,7 +1,8 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-product-detail',
@@ -14,6 +15,7 @@ export class ProductDetailComponent implements OnInit {
   product = signal<any>(null);
   loading = signal<boolean>(true);
   isAdmin = signal<boolean>(false);
+  cartService = inject(CartService);
 
   // High-fidelity details database for premium mock laptop listings
   private readonly laptopDatabase = [
@@ -154,6 +156,7 @@ export class ProductDetailComponent implements OnInit {
   }
 
   addToCart() {
+    this.cartService.addToCart(this.product());
     this.toastr.success(`${this.product().name} added to cart!`);
   }
 }

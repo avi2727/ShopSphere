@@ -9,6 +9,9 @@
     </div>
     <div class="nav-actions">
       <button class="btn-text" routerLink="/">Support</button>
+      <button class="btn-cart-nav" routerLink="/cart" *ngIf="!isAdmin()">
+        🛒 Cart <span class="cart-badge" *ngIf="cartService.cartCount() > 0">{{ cartService.cartCount() }}</span>
+      </button>
       <button class="btn-primary" (click)="openAddModal()" *ngIf="isAdmin()">+ Add Product</button>
     </div>
   </nav>

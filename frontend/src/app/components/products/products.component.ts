@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ProductService } from '../../services/product.service';
 import { ToastrService } from 'ngx-toastr';
+import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-products',
@@ -16,6 +17,7 @@ export class ProductsComponent implements OnInit {
   constructor(
     private productService: ProductService,
     private toastr: ToastrService,
+    public cartService: CartService,
   ) { }
 
   products = signal<any[]>([]);

@@ -1,0 +1,39 @@
+<nav class="navbar" *ngIf="showHeader()">
+  <div class="logo" routerLink="/" style="cursor: pointer;">Shop<span>Sphere</span></div>
+  
+  <div class="nav-links">
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a>
+    <a routerLink="/products" routerLinkActive="active">Catalog</a>
+    <a *ngIf="isLoggedIn()" [routerLink]="isAdmin() ? '/admin-dashboard' : '/user-dashboard'" routerLinkActive="active">Dashboard</a>
+  </div>
+  
+  <div class="nav-actions">
+    <!-- Logged Out Actions -->
+    <ng-container *ngIf="!isLoggedIn()">
+      <button class="btn-cart-nav" routerLink="/cart">
+        🛒 Cart <span class="cart-badge" *ngIf="cartService.cartCount() > 0">{{ cartService.cartCount() }}</span>
+      </button>
+      <button class="btn-text" routerLink="/login">Sign In</button>
+      <button class="btn-primary" routerLink="/register">Register</button>
+    </ng-container>
+
+    <!-- Logged In Actions -->
+    <ng-container *ngIf="isLoggedIn()">
+      <!-- User Cart (Admins don't see it) -->
+      <button class="btn-cart-nav" routerLink="/cart" *ngIf="!isAdmin()">
+        🛒 Cart <span class="cart-badge" *ngIf="cartService.cartCount() > 0">{{ cartService.cartCount() }}</span>
+      </button>
+      
+      <!-- User Info Profile -->
+      <div class="user-profile">
+        <div class="user-avatar">👤</div>
+        <div class="user-info">
+          <span class="user-name">{{ isAdmin() ? 'Admin' : 'User' }}</span>
+          <span class="user-role">{{ userEmail() }}</span>
+        </div>
+      </div>
+      
+      <button class="btn-logout-nav" (click)="logout()">Sign Out</button>
+    </ng-container>
+  </div>
+</nav>

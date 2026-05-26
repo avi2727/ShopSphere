@@ -1,16 +1,4 @@
 <div class="cart-container">
-  <!-- Navigation bar (Matching navbar) -->
-  <nav class="navbar">
-    <div class="logo" routerLink="/" style="cursor: pointer;">Shop<span>Sphere</span></div>
-    <div class="nav-links">
-      <a routerLink="/">Home</a>
-      <a routerLink="/products" class="active">Catalog</a>
-    </div>
-    <div class="nav-actions">
-      <button class="btn-text" routerLink="/login">Sign In</button>
-      <button class="btn-primary" routerLink="/products">Dashboard</button>
-    </div>
-  </nav>
 
   <!-- Main Shopping Panel -->
   <main class="main-content">
@@ -50,13 +38,9 @@
               </div>
             </div>
             
-            <!-- Quantity selector & Price -->
+            <!-- Quantity selector (Static representation) & Price -->
             <div class="item-actions-console">
-              <div class="qty-selector">
-                <button (click)="updateQuantity(item.id, item.quantity - 1)" class="btn-qty">-</button>
-                <span class="qty-num">{{ item.quantity }}</span>
-                <button (click)="updateQuantity(item.id, item.quantity + 1)" class="btn-qty">+</button>
-              </div>
+              <span class="qty-num-static" style="font-weight: 600; color: #475569; font-size: 0.95rem; margin-right: 1rem;">Qty: {{ item.quantity }}</span>
               <span class="item-total-price">{{ (item.price * item.quantity) | currency }}</span>
               <button (click)="removeItem(item.id)" class="btn-remove-item" title="Remove Item">×</button>
             </div>

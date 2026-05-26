@@ -1,19 +1,4 @@
 <div class="detail-container" *ngIf="!loading()">
-  <!-- Navigation bar (Matching site navbar) -->
-  <nav class="navbar">
-    <div class="logo" routerLink="/" style="cursor: pointer;">Shop<span>Sphere</span></div>
-    <div class="nav-links">
-      <a routerLink="/">Home</a>
-      <a routerLink="/products" class="active">Inventory</a>
-    </div>
-    <div class="nav-actions">
-      <button class="btn-text" routerLink="/login">Sign In</button>
-      <button class="btn-cart-nav" routerLink="/cart" *ngIf="!isAdmin()">
-        🛒 Cart <span class="cart-badge" *ngIf="cartService.cartCount() > 0">{{ cartService.cartCount() }}</span>
-      </button>
-      <button class="btn-primary" routerLink="/products">Dashboard</button>
-    </div>
-  </nav>
 
   <!-- Detail Page Main Panel -->
   <main class="main-content" *ngIf="product() as item">
@@ -63,7 +48,7 @@
         <div class="action-buttons">
           @if (isAdmin()) {
             <button class="btn-cart" routerLink="/products">Edit Inventory</button>
-            <button class="btn-buy" routerLink="/dashboard">View Dashboard</button>
+            <button class="btn-buy" routerLink="/admin-dashboard">View Dashboard</button>
           } @else {
             <button class="btn-cart" (click)="addToCart()">Add to Shopping Cart</button>
             <button class="btn-buy" (click)="addToCart()">Buy Now</button>

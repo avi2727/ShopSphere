@@ -1,19 +1,4 @@
 <div class="success-container">
-  <!-- Navigation bar (Matching navbar) -->
-  <nav class="navbar">
-    <div class="logo" routerLink="/" style="cursor: pointer;">Shop<span>Sphere</span></div>
-    <div class="nav-links">
-      <a routerLink="/">Home</a>
-      <a routerLink="/products" class="active">Catalog</a>
-    </div>
-    <div class="nav-actions">
-      <button class="btn-text" routerLink="/login">Sign In</button>
-      <button class="btn-cart-nav" routerLink="/cart" *ngIf="!isAdmin()">
-        🛒 Cart <span class="cart-badge" *ngIf="cartService.cartCount() > 0">{{ cartService.cartCount() }}</span>
-      </button>
-      <button class="btn-primary" routerLink="/products">Dashboard</button>
-    </div>
-  </nav>
 
   <!-- Main Shopping Panel -->
   <main class="main-content" *ngIf="invoice() as data">
@@ -67,7 +52,7 @@
       <!-- Navigation Actions -->
       <div class="action-buttons">
         <button routerLink="/" class="btn-cta">Shop More Laptops</button>
-        <button routerLink="/dashboard" class="btn-outline">View My Portal</button>
+        <button routerLink="/user-dashboard" class="btn-outline">View My Portal</button>
       </div>
     </div>
   </main>

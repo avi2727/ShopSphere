@@ -49,8 +49,12 @@ export class LoginComponent {
 
         this.isLoading = false;
 
-        // redirect to dashboard
-        this.router.navigate(['/dashboard']);
+        // redirect directly to role-based dashboard
+        if (this.email.toLowerCase().includes('admin')) {
+          this.router.navigate(['/admin-dashboard']);
+        } else {
+          this.router.navigate(['/user-dashboard']);
+        }
       },
 
       error: () => {

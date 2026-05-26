@@ -30,20 +30,46 @@ export class CartComponent {
   formError = signal<string>('');
   isSubmitting = signal<boolean>(false);
 
-  // Expose signals from CartService
-  cartItems = this.cartService.cartItems;
-  subtotal = this.cartService.cartSubtotal;
-  shipping = this.cartService.shippingFee;
-  tax = this.cartService.taxFee;
-  total = this.cartService.cartTotal;
+  // Expose static mock signals for direct frontend representation
+  cartItems = signal<any[]>([
+    {
+      id: 1,
+      name: 'MacBook Pro 16" (M3 Max, 64GB)',
+      price: 3499.00,
+      image: 'assets/images/macbook_pro.png',
+      specs: 'M3 Max • 16" Liquid Retina XDR • 64GB Unified Memory • 1TB SSD',
+      quantity: 1
+    },
+    {
+      id: 2,
+      name: 'ROG Zephyrus G16 (RTX 4090, OLED)',
+      price: 2999.00,
+      image: 'assets/images/rog_zephyrus.png',
+      specs: 'Intel Core Ultra 9 • 16" QHD+ OLED 240Hz • 32GB LPDDR5X • 2TB SSD',
+      quantity: 1
+    }
+  ]);
+
+  subtotal = signal<number>(6498.00);
+  shipping = signal<number>(15.00);
+  tax = signal<number>(519.84);
+  total = signal<number>(7032.84);
 
   updateQuantity(productId: number, newQty: number) {
-    this.cartService.updateQuantity(productId, newQty);
+    // Left empty: all internal quantity logic will be handled by user
   }
 
   removeItem(productId: number) {
-    this.cartService.removeFromCart(productId);
+    this.cartItems.update(items => items.filter(item => item.id !== productId));
     this.toastr.info('Item removed from cart');
+    
+    // Recalculate visually
+    const remaining = this.cartItems();
+    const sub = remaining.reduce((t, i) => t + (i.price * i.quantity), 0);
+    this.subtotal.set(sub);
+    this.tax.set(sub * 0.08);
+    this.shipping.set(remaining.length > 0 ? 15.00 : 0.00);
+    this.total.set(sub + this.tax() + this.shipping());
   }
 
   onCheckout() {
@@ -76,8 +102,8 @@ export class CartComponent {
       
       localStorage.setItem('lastInvoice', JSON.stringify(currentInvoice));
       
-      // Clear the shopping cart
-      this.cartService.clearCart();
+      // Clear the shopping cart visually
+      this.cartItems.set([]);
       this.toastr.success('Order placed successfully!');
       
       // Redirect to success route

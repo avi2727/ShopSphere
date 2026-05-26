@@ -1,21 +1,4 @@
 <div class="products-container">
-  <!-- Navigation bar -->
-  <nav class="navbar">
-    <div class="logo" routerLink="/" style="cursor: pointer;">Shop<span>Sphere</span></div>
-    <div class="nav-links">
-      <a routerLink="/">Home</a>
-      <a routerLink="/dashboard">Dashboard</a>
-      <a routerLink="/products" class="nav-link active">Catalog</a>
-    </div>
-    <div class="nav-actions">
-      <button class="btn-text" routerLink="/">Support</button>
-      <button class="btn-cart-nav" routerLink="/cart" *ngIf="!isAdmin()">
-        🛒 Cart <span class="cart-badge" *ngIf="cartService.cartCount() > 0">{{ cartService.cartCount() }}</span>
-      </button>
-      <button class="btn-primary" (click)="openAddModal()" *ngIf="isAdmin()">+ Add Product</button>
-    </div>
-  </nav>
-
   <!-- Main Section -->
   <main class="main-content">
     <div class="page-header">
@@ -26,7 +9,8 @@
         <p *ngIf="isAdmin()">Manage and supervise your catalog from a centralized cockpit console.</p>
         <p *ngIf="!isAdmin()">Browse our premium, hand-picked laptop models curated for your workflow.</p>
       </div>
-      <div class="actions-section">
+      <div class="actions-section" style="display: flex; gap: 1rem; align-items: center;">
+        <button class="btn-primary" (click)="openAddModal()" *ngIf="isAdmin()">+ Add Product</button>
         <div class="search-box">
           <span class="search-icon">🔍</span>
           <input type="text" placeholder="Search by name or ID..." [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)" />
@@ -34,8 +18,8 @@
       </div>
     </div>
 
-    <!-- Table Container -->
-    <div class="table-card">
+    <!-- Table Container (Admin Only) -->
+    <div class="table-card" *ngIf="isAdmin()">
       <div class="table-wrapper">
         <table class="premium-table">
           <thead>
@@ -43,7 +27,7 @@
               <th class="w-id">ID</th>
               <th class="w-name">Laptop Name</th>
               <th class="w-price">Price</th>
-              <th class="w-actions">{{ isAdmin() ? 'Actions' : 'Details' }}</th>
+              <th class="w-actions">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -53,9 +37,8 @@
                 <div class="empty-state">
                   <div class="empty-icon">📦</div>
                   <h3>No Laptops Found</h3>
-                  <p *ngIf="isAdmin()">Your filter did not match any laptops, or inventory is empty. Click "+ Add Product" to add a new one.</p>
-                  <p *ngIf="!isAdmin()">We couldn't find any laptops matching your query. Try searching for other key terms.</p>
-                  <button class="btn-cta-empty" (click)="openAddModal()" *ngIf="isAdmin()">+ Add New Product</button>
+                  <p>Your filter did not match any laptops, or inventory is empty. Click "+ Add Product" to add a new one.</p>
+                  <button class="btn-cta-empty" (click)="openAddModal()">+ Add New Product</button>
                 </div>
               </td>
             </tr>
@@ -65,20 +48,44 @@
               <td class="product-name-cell">{{ product.name }}</td>
               <td class="price-cell">{{ product.price | currency }}</td>
               <td class="actions-cell">
-                <!-- Admin Operations -->
-                <ng-container *ngIf="isAdmin()">
-                  <button class="btn-icon btn-edit" title="Edit Specs" (click)="openEditModal(product)">✏️</button>
-                  <button class="btn-icon btn-delete" title="Delete Product" (click)="deleteProduct(product.id)">🗑️</button>
-                </ng-container>
-                
-                <!-- Regular Customer Operations -->
-                <ng-container *ngIf="!isAdmin()">
-                  <button class="btn-icon btn-edit" style="color: #7c3aed; background: rgba(124, 58, 237, 0.05); border-color: rgba(124, 58, 237, 0.15);" title="View Laptop Details" [routerLink]="['/products', product.id]">👁️</button>
-                </ng-container>
+                <button class="btn-icon btn-edit" title="Edit Specs" (click)="openEditModal(product)">✏️</button>
+                <button class="btn-icon btn-delete" title="Delete Product" (click)="promptDelete(product)">🗑️</button>
               </td>
             </tr>
           </tbody>
         </table>
+      </div>
+    </div>
+
+    <!-- Customer Grid Catalog (Customer Only) -->
+    <div class="customer-grid-catalog" *ngIf="!isAdmin()">
+      <!-- Empty state card -->
+      <div class="empty-state-card" *ngIf="filteredProducts().length === 0">
+        <div class="empty-icon">📦</div>
+        <h3>No Laptops Found</h3>
+        <p>We couldn't find any laptops matching your query. Try searching for other key terms.</p>
+      </div>
+
+      <!-- Active Grid -->
+      <div class="products-grid-layout" *ngIf="filteredProducts().length > 0">
+        <div class="product-grid-card" *ngFor="let product of filteredProducts()">
+          <div class="card-img-wrapper">
+            <img [src]="getLaptopImage(product)" alt="Laptop Design">
+            <span class="badge-tag">Premium Edition</span>
+          </div>
+          <div class="card-body">
+            <h3>{{ product.name }}</h3>
+            <p class="specs-mini">{{ getLaptopSpecs(product) }}</p>
+            <div class="pricing-console-row">
+              <span class="price-val">{{ product.price | currency }}</span>
+              <span class="tax-note">VAT Inc.</span>
+            </div>
+            <div class="card-action-btns">
+              <button class="btn-view-details" [routerLink]="['/products', product.id]">👁️ View Details</button>
+              <button class="btn-quick-add" (click)="quickAddToCart(product)">🛒 Add to Cart</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </main>
@@ -124,6 +131,31 @@
           </button>
         </div>
       </form>
+    </div>
+  </div>
+  }
+
+  <!-- Delete Confirmation Glassmorphic Modal Layer -->
+  @if (isDeleteModalOpen() && isAdmin()) {
+  <div class="modal-overlay">
+    <div class="modal-card delete-modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Confirm <span>Deletion</span></h2>
+        <button class="btn-close-modal" (click)="cancelDelete()">×</button>
+      </div>
+
+      <div class="delete-modal-body">
+        <div class="warning-icon-wrapper">⚠️</div>
+        <h3>Are you sure?</h3>
+        <p>You are about to permanently delete <strong>{{ productNameToDelete() }}</strong> from the inventory catalog. This action is irreversible.</p>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" (click)="cancelDelete()">Cancel</button>
+        <button type="button" class="btn-delete-confirm" (click)="confirmDelete()">
+          Permanently Delete
+        </button>
+      </div>
     </div>
   </div>
   }

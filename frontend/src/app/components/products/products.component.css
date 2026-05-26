@@ -595,3 +595,243 @@
   line-height: 1;
   box-shadow: 0 2px 5px rgba(219, 39, 119, 0.3);
 }
+
+/* Customer Grid Layout */
+.customer-grid-catalog {
+  width: 100%;
+}
+
+.products-grid-layout {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-top: 1rem;
+}
+
+.product-grid-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(15, 23, 42, 0.05);
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.02);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-grid-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(124, 58, 237, 0.2);
+  box-shadow: 0 15px 30px rgba(124, 58, 237, 0.08);
+}
+
+.card-img-wrapper {
+  position: relative;
+  height: 200px;
+  background: #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.card-img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.product-grid-card:hover .card-img-wrapper img {
+  transform: scale(1.08);
+}
+
+.badge-tag {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: #db2777;
+  color: white;
+  padding: 0.25rem 0.6rem;
+  border-radius: 99px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 6px rgba(219, 39, 119, 0.3);
+}
+
+.card-body {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.card-body h3 {
+  font-size: 1.15rem;
+  font-weight: 750;
+  color: #0f172a;
+  margin: 0 0 0.5rem;
+  line-height: 1.3;
+}
+
+.specs-mini {
+  color: #64748b;
+  font-size: 0.8rem;
+  font-weight: 500;
+  line-height: 1.4;
+  margin: 0 0 1.25rem;
+  flex: 1;
+}
+
+.pricing-console-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.price-val {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #7c3aed;
+}
+
+.tax-note {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.card-action-btns {
+  display: flex;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.btn-view-details {
+  flex: 1;
+  background: rgba(15, 23, 42, 0.02);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  color: #475569;
+  padding: 0.7rem;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+}
+
+.btn-view-details:hover {
+  background: rgba(15, 23, 42, 0.05);
+  color: #0f172a;
+}
+
+.btn-quick-add {
+  flex: 1.2;
+  background: linear-gradient(135deg, #7c3aed, #db2777);
+  color: white;
+  border: none;
+  padding: 0.7rem;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+}
+
+.btn-quick-add:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
+}
+
+/* Empty State Card */
+.empty-state-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(15, 23, 42, 0.05);
+  border-radius: 24px;
+  padding: 4rem 2rem;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.02);
+  max-width: 500px;
+  margin: 2rem auto 0;
+}
+
+/* Delete Confirmation Modal Styles */
+.delete-modal-card {
+  max-width: 440px !important;
+  text-align: center;
+  padding: 2.5rem;
+}
+
+.delete-modal-body {
+  margin: 1.5rem 0 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.warning-icon-wrapper {
+  width: 64px;
+  height: 64px;
+  background: rgba(239, 68, 68, 0.08);
+  border: 2px solid rgba(239, 68, 68, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: #ef4444;
+  margin-bottom: 0.5rem;
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.1);
+  animation: scaleUpDelete 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.delete-modal-body h3 {
+  font-size: 1.3rem;
+  font-weight: 750;
+  color: #0f172a;
+  margin: 0;
+}
+
+.delete-modal-body p {
+  color: #475569;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.btn-delete-confirm {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-delete-confirm:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(239, 68, 68, 0.25);
+}
+
+@keyframes scaleUpDelete {
+  from { transform: scale(0.6); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ShopSphere.DTOs.Product;
 using MyDotNetApi.Data;
@@ -23,7 +23,12 @@ namespace MyDotNetApi.Controllers
             var product = new Product
             {
                 Name = dto.Name,
-                Price = dto.Price
+                Price = dto.Price,
+                Description = dto.Description,
+                StockQuantity = dto.StockQuantity,
+                ImageUrl = dto.ImageUrl,
+                Specifications = dto.Specifications,
+                CategoryId = dto.CategoryId
             };
 
             _context.Products.Add(product);
@@ -41,7 +46,12 @@ namespace MyDotNetApi.Controllers
                 {
                     Id = p.Id,
                     Name = p.Name,
-                    Price = p.Price
+                    Price = p.Price,
+                    Description = p.Description,
+                    StockQuantity = p.StockQuantity,
+                    ImageUrl = p.ImageUrl,
+                    Specifications = p.Specifications,
+                    CategoryId = p.CategoryId
                 })
                 .ToListAsync();
 
@@ -60,6 +70,11 @@ namespace MyDotNetApi.Controllers
 
             product.Name = dto.Name;
             product.Price = dto.Price;
+            product.Description = dto.Description;
+            product.StockQuantity = dto.StockQuantity;
+            product.ImageUrl = dto.ImageUrl;
+            product.Specifications = dto.Specifications;
+            product.CategoryId = dto.CategoryId;
 
             await _context.SaveChangesAsync();
 

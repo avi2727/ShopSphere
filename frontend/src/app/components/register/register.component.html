@@ -11,30 +11,30 @@
         <p>Start your 14-day free trial. No credit card required.</p>
       </div>
 
-      <form (submit)="onRegister(); $event.preventDefault()" class="auth-form">
+      <form (ngSubmit)="onRegister()" #registerForm="ngForm" class="auth-form">
         <!-- Error banner -->
-        <div class="error-banner" *ngIf="errorMessage">
+        <div class="error-banner" *ngIf="errorMessage()">
           <span class="error-icon">⚠️</span>
-          <span class="error-text">{{ errorMessage }}</span>
+          <span class="error-text">{{ errorMessage() }}</span>
         </div>
 
         <!-- Success banner -->
-        <div class="success-banner" *ngIf="successMessage">
+        <div class="success-banner" *ngIf="successMessage()">
           <span class="success-icon">✓</span>
-          <span class="success-text">{{ successMessage }}</span>
+          <span class="success-text">{{ successMessage() }}</span>
         </div>
 
         <div class="form-group">
           <label for="name">Full Name</label>
           <div class="input-wrapper">
             <span class="input-icon">👤</span>
-            <input 
-              type="text" 
-              id="name" 
-              name="name" 
-              [(ngModel)]="name" 
-              placeholder="Alexander Wright" 
-              required 
+            <input
+              type="text"
+              id="name"
+              name="name"
+              [(ngModel)]="name"
+              placeholder="Aviansh Shukla"
+              required
             />
           </div>
         </div>
@@ -43,13 +43,13 @@
           <label for="email">Email Address</label>
           <div class="input-wrapper">
             <span class="input-icon">✉️</span>
-            <input 
-              type="email" 
-              id="email" 
-              name="email" 
-              [(ngModel)]="email" 
-              placeholder="alex@example.com" 
-              required 
+            <input
+              type="email"
+              id="email"
+              name="email"
+              [(ngModel)]="email"
+              placeholder="alex@example.com"
+              required
             />
           </div>
         </div>
@@ -58,13 +58,13 @@
           <label for="password">Password</label>
           <div class="input-wrapper">
             <span class="input-icon">🔒</span>
-            <input 
-              type="password" 
-              id="password" 
-              name="password" 
-              [(ngModel)]="password" 
-              placeholder="At least 8 characters" 
-              required 
+            <input
+              type="password"
+              id="password"
+              name="password"
+              [(ngModel)]="password"
+              placeholder="At least 8 characters"
+              required
             />
           </div>
         </div>
@@ -73,19 +73,24 @@
           <label class="checkbox-container">
             <input type="checkbox" name="agreeTerms" [(ngModel)]="agreeTerms" />
             <span class="checkmark"></span>
-            I agree to the <a class="terms-link" (click)="$event.preventDefault(); $event.stopPropagation()">Terms of Service</a> & <a class="terms-link" (click)="$event.preventDefault(); $event.stopPropagation()">Privacy Policy</a>
+            I agree to the
+            <a class="terms-link" (click)="$event.preventDefault(); $event.stopPropagation()"
+              >Terms of Service</a
+            >
+            &
+            <a class="terms-link" (click)="$event.preventDefault(); $event.stopPropagation()"
+              >Privacy Policy</a
+            >
           </label>
         </div>
 
-        <button type="submit" class="btn-submit" [disabled]="isLoading">
-          <span *ngIf="!isLoading">Register Catalog</span>
-          <span *ngIf="isLoading" class="spinner"></span>
+        <button type="submit" class="btn-submit" [disabled]="isLoading()">
+          <span *ngIf="!isLoading()">Register</span>
+          <span *ngIf="isLoading()" class="spinner"></span>
         </button>
       </form>
 
-      <div class="auth-footer">
-        Already have an account? <a routerLink="/login">Sign in</a>
-      </div>
+      <div class="auth-footer">Already have an account? <a routerLink="/login">Sign in</a></div>
     </div>
   </div>
 </div>

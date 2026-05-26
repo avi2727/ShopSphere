@@ -26,7 +26,7 @@ public class AuthController : ControllerBase
     public IActionResult Login(LoginDto dto)
     {
         var user = _context.Users
-            .FirstOrDefault(x => x.Username == dto.Username);
+            .FirstOrDefault(x => x.Email == dto.Email);
 
         if (user == null)
             return Unauthorized("Invalid credentials");
@@ -49,7 +49,8 @@ public class AuthController : ControllerBase
         {
             token,
             role = user.Role,
-            username = user.Username
+            username = user.Username,
+            email = user.Email
         });
     }
 
@@ -66,6 +67,7 @@ public class AuthController : ControllerBase
         var user = new User
         {
             Username = dto.Username,
+            Email = dto.Email,
             Password = BCrypt.Net.BCrypt.HashPassword(dto.Password),
             Role = dto.Username.ToLower().Contains("admin") ? "Admin" : "User"
         };

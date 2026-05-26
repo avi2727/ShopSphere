@@ -13,22 +13,22 @@
 
       <form (submit)="onLogin(); $event.preventDefault()" class="auth-form">
         <!-- Error message banner -->
-        <div class="error-banner" *ngIf="errorMessage">
+        <div class="error-banner" *ngIf="errorMessage()">
           <span class="error-icon">⚠️</span>
-          <span class="error-text">{{ errorMessage }}</span>
+          <span class="error-text">{{ errorMessage() }}</span>
         </div>
 
         <div class="form-group">
           <label for="email">Email Address</label>
           <div class="input-wrapper">
             <span class="input-icon">✉️</span>
-            <input 
-              type="email" 
-              id="email" 
-              name="email" 
-              [(ngModel)]="email" 
-              placeholder="admin@shopsphere.com" 
-              required 
+            <input
+              type="email"
+              id="email"
+              name="email"
+              [(ngModel)]="email"
+              placeholder="admin@shopsphere.com"
+              required
             />
           </div>
         </div>
@@ -40,13 +40,13 @@
           </div>
           <div class="input-wrapper">
             <span class="input-icon">🔒</span>
-            <input 
-              type="password" 
-              id="password" 
-              name="password" 
-              [(ngModel)]="password" 
-              placeholder="••••••••" 
-              required 
+            <input
+              type="password"
+              id="password"
+              name="password"
+              [(ngModel)]="password"
+              placeholder="••••••••"
+              required
             />
           </div>
         </div>
@@ -59,18 +59,28 @@
           </label>
         </div>
 
-        <button type="submit" class="btn-submit" [disabled]="isLoading">
-          <span *ngIf="!isLoading">Sign In</span>
-          <span *ngIf="isLoading" class="spinner"></span>
+        <button type="submit" class="btn-submit" [disabled]="isLoading()">
+          <span *ngIf="!isLoading()">Sign In</span>
+          <span *ngIf="isLoading()" class="spinner"></span>
         </button>
 
         <div class="social-login">
           <p class="social-title">Or continue with</p>
           <div class="social-btns">
-            <button type="button" class="btn-social" title="Google" (click)="$event.preventDefault()">
+            <button
+              type="button"
+              class="btn-social"
+              title="Google"
+              (click)="$event.preventDefault()"
+            >
               <span>Google</span>
             </button>
-            <button type="button" class="btn-social" title="Apple" (click)="$event.preventDefault()">
+            <button
+              type="button"
+              class="btn-social"
+              title="Apple"
+              (click)="$event.preventDefault()"
+            >
               <span>Apple</span>
             </button>
           </div>

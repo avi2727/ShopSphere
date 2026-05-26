@@ -3,11 +3,11 @@
   <main class="main-content">
     <div class="page-header">
       <div class="title-section">
-        <h1 *ngIf="isAdmin()">Laptop <span>Inventory</span></h1>
-        <h1 *ngIf="!isAdmin()">All <span>Laptops</span></h1>
+        <h1 *ngIf="isAdmin()">Product <span>Inventory</span></h1>
+        <h1 *ngIf="!isAdmin()">All <span>Products</span></h1>
         
         <p *ngIf="isAdmin()">Manage and supervise your catalog from a centralized cockpit console.</p>
-        <p *ngIf="!isAdmin()">Browse our premium, hand-picked laptop models curated for your workflow.</p>
+        <p *ngIf="!isAdmin()">Browse our premium, hand-picked product models curated for your workflow.</p>
       </div>
       <div class="actions-section" style="display: flex; gap: 1rem; align-items: center;">
         <button class="btn-primary" (click)="openAddModal()" *ngIf="isAdmin()">+ Add Product</button>
@@ -25,19 +25,24 @@
           <thead>
             <tr>
               <th class="w-id">ID</th>
-              <th class="w-name">Laptop Name</th>
+              <th class="w-img">Image</th>
+              <th class="w-name">Product Name</th>
               <th class="w-price">Price</th>
+              <th class="w-desc">Description</th>
+              <th class="w-stock">Stock</th>
+              <th class="w-specs">Specifications</th>
+              <th class="w-cat">Category</th>
               <th class="w-actions">Actions</th>
             </tr>
           </thead>
           <tbody>
             <!-- Empty state row -->
             <tr *ngIf="filteredProducts().length === 0">
-              <td colspan="4" class="empty-row-cell">
+              <td colspan="9" class="empty-row-cell">
                 <div class="empty-state">
                   <div class="empty-icon">📦</div>
-                  <h3>No Laptops Found</h3>
-                  <p>Your filter did not match any laptops, or inventory is empty. Click "+ Add Product" to add a new one.</p>
+                  <h3>No Products Found</h3>
+                  <p>Your filter did not match any products, or inventory is empty. Click "+ Add Product" to add a new one.</p>
                   <button class="btn-cta-empty" (click)="openAddModal()">+ Add New Product</button>
                 </div>
               </td>
@@ -45,8 +50,19 @@
             <!-- Active Data Rows -->
             <tr *ngFor="let product of filteredProducts()">
               <td>#{{ product.id }}</td>
+              <td class="img-cell">
+                <img [src]="product.imageUrl || 'assets/images/default_product.png'" alt="Product Thumbnail" class="table-thumb" />
+              </td>
               <td class="product-name-cell">{{ product.name }}</td>
               <td class="price-cell">{{ product.price | currency }}</td>
+              <td class="desc-cell" [title]="product.description">{{ product.description || 'No description' }}</td>
+              <td class="stock-cell">
+                <span class="stock-badge" [class.low-stock]="product.stockQuantity <= 5">
+                  {{ product.stockQuantity }}
+                </span>
+              </td>
+              <td class="specs-cell" [title]="product.specifications">{{ product.specifications || 'No specifications' }}</td>
+              <td class="cat-cell">ID: {{ product.categoryId }}</td>
               <td class="actions-cell">
                 <button class="btn-icon btn-edit" title="Edit Specs" (click)="openEditModal(product)">✏️</button>
                 <button class="btn-icon btn-delete" title="Delete Product" (click)="promptDelete(product)">🗑️</button>
@@ -62,15 +78,15 @@
       <!-- Empty state card -->
       <div class="empty-state-card" *ngIf="filteredProducts().length === 0">
         <div class="empty-icon">📦</div>
-        <h3>No Laptops Found</h3>
-        <p>We couldn't find any laptops matching your query. Try searching for other key terms.</p>
+        <h3>No Products Found</h3>
+        <p>We couldn't find any products matching your query. Try searching for other key terms.</p>
       </div>
 
       <!-- Active Grid -->
       <div class="products-grid-layout" *ngIf="filteredProducts().length > 0">
         <div class="product-grid-card" *ngFor="let product of filteredProducts()">
           <div class="card-img-wrapper">
-            <img [src]="getLaptopImage(product)" alt="Laptop Design">
+            <img [src]="getLaptopImage(product)" alt="Product Design">
             <span class="badge-tag">Premium Edition</span>
           </div>
           <div class="card-body">
@@ -106,21 +122,68 @@
           <span class="error-text">{{ formError() }}</span>
         </div>
 
-        <div class="form-group">
-          <label for="prodName">Product Name</label>
-          <div class="input-wrapper">
-            <span class="input-icon">🏷️</span>
-            <input type="text" id="prodName" name="name" [(ngModel)]="currentProduct.name"
-              placeholder="e.g. Mechanical Gaming Keyboard" required />
+        <div class="modal-form-body">
+          <div class="form-group">
+            <label for="prodName">Product Name</label>
+            <div class="input-wrapper">
+              <span class="input-icon">🏷️</span>
+              <input type="text" id="prodName" name="name" [(ngModel)]="currentProduct.name"
+                placeholder="e.g. Asus ROG Zephyrus G16" required />
+            </div>
           </div>
-        </div>
 
-        <div class="form-group">
-          <label for="prodPrice">Price (USD)</label>
-          <div class="input-wrapper">
-            <span class="input-icon">💲</span>
-            <input type="number" id="prodPrice" name="price" [(ngModel)]="currentProduct.price" placeholder="e.g. 89.99"
-              step="0.01" required />
+          <div class="form-group">
+            <label for="prodPrice">Price (USD)</label>
+            <div class="input-wrapper">
+              <span class="input-icon">💲</span>
+              <input type="number" id="prodPrice" name="price" [(ngModel)]="currentProduct.price" placeholder="e.g. 1999.99"
+                step="0.01" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="prodDescription">Description</label>
+            <div class="input-wrapper">
+              <span class="input-icon">📝</span>
+              <textarea id="prodDescription" name="description" [(ngModel)]="currentProduct.description"
+                placeholder="Enter product description..." rows="3"></textarea>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="prodStock">Stock Quantity</label>
+            <div class="input-wrapper">
+              <span class="input-icon">📦</span>
+              <input type="number" id="prodStock" name="stockQuantity" [(ngModel)]="currentProduct.stockQuantity"
+                placeholder="e.g. 50" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="prodImage">Image URL</label>
+            <div class="input-wrapper">
+              <span class="input-icon">🖼️</span>
+              <input type="text" id="prodImage" name="imageUrl" [(ngModel)]="currentProduct.imageUrl"
+                placeholder="e.g. assets/images/custom_product.png" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="prodSpecs">Specifications (JSON or text)</label>
+            <div class="input-wrapper">
+              <span class="input-icon">⚙️</span>
+              <textarea id="prodSpecs" name="specifications" [(ngModel)]="currentProduct.specifications"
+                placeholder='e.g. {"RAM": "32GB", "Storage": "1TB SSD"}' rows="3"></textarea>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="prodCategory">Category ID</label>
+            <div class="input-wrapper">
+              <span class="input-icon">📁</span>
+              <input type="number" id="prodCategory" name="categoryId" [(ngModel)]="currentProduct.categoryId"
+                placeholder="e.g. 1" required />
+            </div>
           </div>
         </div>
 

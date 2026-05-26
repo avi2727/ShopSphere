@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -13,56 +13,62 @@ import { ToastrService } from 'ngx-toastr';
   styleUrl: './register.component.css'
 })
 export class RegisterComponent {
-  name = '';
-  email = '';
-  password = '';
-  agreeTerms = false;
-  errorMessage = '';
-  successMessage = '';
-  isLoading = false;
+  name = signal('');
+  email = signal('');
+  password = signal('');
+  agreeTerms = signal(false);
+  errorMessage = signal('');
+  successMessage = signal('');
+  isLoading = signal(false);
 
-  constructor(private router: Router, private authService: AuthService, private toastr: ToastrService) { }
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+    private toastr: ToastrService
+  ) { }
 
   onRegister() {
-    if (!this.name || !this.email || !this.password) {
-      this.errorMessage = 'All fields are required.';
+    if (!this.name() || !this.email() || !this.password()) {
+      this.errorMessage.set('All fields are required.');
       return;
     }
 
-    if (this.password.length < 8) {
-      this.errorMessage = 'Password must be at least 8 characters long.';
+    if (this.password().length < 8) {
+      this.errorMessage.set('Password must be at least 8 characters long.');
       return;
     }
 
-    if (!this.agreeTerms) {
-      this.errorMessage = 'You must agree to the Terms.';
+    if (!this.agreeTerms()) {
+      this.errorMessage.set('You must agree to the Terms.');
       return;
     }
 
-    this.isLoading = true;
-    this.errorMessage = '';
-    this.successMessage = '';
+    this.isLoading.set(true);
+    this.errorMessage.set('');
+    this.successMessage.set('');
 
     const payload = {
-      username: this.email,   // IMPORTANT mapping
-      password: this.password
+      username: this.name(),
+      email: this.email(),
+      password: this.password()
     };
 
     this.authService.register(payload).subscribe({
       next: (res: any) => {
-        this.isLoading = false;
-        this.errorMessage = '';
-        this.successMessage = res.message || 'Registration successful!';
-        this.toastr.success(res.message || 'Registration successful!');
+        this.isLoading.set(false);
+        this.errorMessage.set('');
+        const successMsg = res.message || 'Registration successful!';
+        this.successMessage.set(successMsg);
+        this.toastr.success(successMsg);
         setTimeout(() => {
           this.router.navigate(['/login']);
         }, 1500);
       },
       error: (err: any) => {
-        this.isLoading = false;
+        this.isLoading.set(false);
         const msg = err?.error?.message || err?.error || 'Registration failed';
-        this.errorMessage = msg;
-        this.successMessage = '';
+        this.errorMessage.set(msg);
+        this.successMessage.set('');
         this.toastr.error(msg);
       }
     });

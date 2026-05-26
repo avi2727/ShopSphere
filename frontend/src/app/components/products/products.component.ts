@@ -33,7 +33,16 @@ export class ProductsComponent implements OnInit {
   productNameToDelete = signal<string>('');
 
   // Form mapping - standard object for clean ngModel bindings
-  currentProduct = { id: 0, name: '', price: 0 };
+  currentProduct = {
+    id: 0,
+    name: '',
+    price: 0,
+    description: '',
+    stockQuantity: 0,
+    imageUrl: '',
+    specifications: '',
+    categoryId: 1
+  };
 
   // Computed signal for real-time search filtration
   filteredProducts = computed(() => {
@@ -63,7 +72,16 @@ export class ProductsComponent implements OnInit {
   openAddModal() {
     if (!this.isAdmin()) return;
     this.isEditing.set(false);
-    this.currentProduct = { id: 0, name: '', price: 0 };
+    this.currentProduct = {
+      id: 0,
+      name: '',
+      price: 0,
+      description: '',
+      stockQuantity: 0,
+      imageUrl: '',
+      specifications: '',
+      categoryId: 1
+    };
     this.formError.set('');
     this.isModalOpen.set(true);
   }

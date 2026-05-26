@@ -43,14 +43,13 @@ export class LoginComponent {
 
         // ✅ STORE JWT TOKEN
         localStorage.setItem('token', response.token);
-
-        // optional user data
-        localStorage.setItem('userEmail', this.email);
+        localStorage.setItem('userEmail', response.username);
+        localStorage.setItem('userRole', response.role);
 
         this.isLoading = false;
 
         // redirect directly to role-based dashboard
-        if (this.email.toLowerCase().includes('admin')) {
+        if (response.role && response.role.toLowerCase() === 'admin') {
           this.router.navigate(['/admin-dashboard']);
         } else {
           this.router.navigate(['/user-dashboard']);

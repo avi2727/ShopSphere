@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, inject } from '@angular/core';
+import { Component, OnInit, signal, inject, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive, NavigationEnd } from '@angular/router';
 import { CartService } from '../../services/cart.service';
@@ -18,6 +18,21 @@ export class HeaderComponent implements OnInit {
   isAdmin = signal<boolean>(false);
   userEmail = signal<string>('');
   showHeader = signal<boolean>(true);
+  isProfilePopupOpen = signal<boolean>(false);
+
+  toggleProfilePopup(event: Event) {
+    event.stopPropagation();
+    this.isProfilePopupOpen.update(prev => !prev);
+  }
+
+  closeProfilePopup() {
+    this.isProfilePopupOpen.set(false);
+  }
+
+  @HostListener('document:click')
+  onDocumentClick() {
+    this.closeProfilePopup();
+  }
 
   ngOnInit() {
     this.checkAuthStatus();
@@ -33,21 +48,25 @@ export class HeaderComponent implements OnInit {
   checkAuthStatus() {
     const token = localStorage.getItem('token');
     const email = localStorage.getItem('userEmail') || '';
+    let role = localStorage.getItem('userRole') || '';
+    
+    // Self-healing: if role is empty but email is present, infer from email substring
+    if (!role && email) {
+      role = email.toLowerCase().includes('admin') ? 'Admin' : 'User';
+      localStorage.setItem('userRole', role);
+    }
     
     this.isLoggedIn.set(!!token);
     this.userEmail.set(email);
-    this.isAdmin.set(email.toLowerCase().includes('admin'));
-
-    // Dynamically show/hide header on side-nav dashboards and auth screens
-    const currentUrl = this.router.url;
-    const hideOnRoutes = ['/admin-dashboard', '/user-dashboard', '/login', '/register'];
-    const shouldHide = hideOnRoutes.some(route => currentUrl.includes(route));
-    this.showHeader.set(!shouldHide);
+    this.isAdmin.set(role.toLowerCase() === 'admin');
+    this.showHeader.set(true);
   }
 
   logout() {
+    this.closeProfilePopup();
     localStorage.removeItem('token');
     localStorage.removeItem('userEmail');
+    localStorage.removeItem('userRole');
     this.isLoggedIn.set(false);
     this.isAdmin.set(false);
     this.userEmail.set('');

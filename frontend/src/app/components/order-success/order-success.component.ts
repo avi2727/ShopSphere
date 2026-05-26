@@ -17,8 +17,15 @@ export class OrderSuccessComponent implements OnInit {
   isAdmin = signal<boolean>(false);
 
   ngOnInit(): void {
-    const storedEmail = localStorage.getItem('userEmail') || '';
-    this.isAdmin.set(storedEmail.toLowerCase().includes('admin'));
+    const email = localStorage.getItem('userEmail') || '';
+    let role = localStorage.getItem('userRole') || '';
+    
+    if (!role && email) {
+      role = email.toLowerCase().includes('admin') ? 'Admin' : 'User';
+      localStorage.setItem('userRole', role);
+    }
+    
+    this.isAdmin.set(role.toLowerCase() === 'admin');
     // Read invoice data from transaction session
     const savedInvoice = localStorage.getItem('lastInvoice');
     if (savedInvoice) {

@@ -24,16 +24,37 @@
         🛒 Cart <span class="cart-badge" *ngIf="cartService.cartCount() > 0">{{ cartService.cartCount() }}</span>
       </button>
       
-      <!-- User Info Profile -->
-      <div class="user-profile">
-        <div class="user-avatar">👤</div>
-        <div class="user-info">
-          <span class="user-name">{{ isAdmin() ? 'Admin' : 'User' }}</span>
-          <span class="user-role">{{ userEmail() }}</span>
+      <!-- User Info Profile Trigger -->
+      <div class="profile-container">
+        <button class="user-profile-trigger" (click)="toggleProfilePopup($event)">
+          <div class="user-avatar">👤</div>
+          <div class="user-info-trigger">
+            <span class="user-name">{{ isAdmin() ? 'Admin' : 'User' }}</span>
+            <span class="dropdown-arrow" [class.rotated]="isProfilePopupOpen()">▼</span>
+          </div>
+        </button>
+
+        <!-- Premium Profile Popup Dropdown -->
+        <div class="profile-popup" *ngIf="isProfilePopupOpen()" (click)="$event.stopPropagation()">
+          <div class="popup-header">
+            <div class="popup-avatar">👤</div>
+            <div class="popup-user-details">
+              <span class="popup-user-name">{{ isAdmin() ? 'Administrator' : 'Valued Customer' }}</span>
+              <span class="popup-user-email">{{ userEmail() }}</span>
+            </div>
+          </div>
+          <div class="popup-divider"></div>
+          <div class="popup-actions">
+            <a [routerLink]="isAdmin() ? '/admin-dashboard' : '/user-dashboard'" [queryParams]="{ tab: 'settings' }" (click)="closeProfilePopup()" class="popup-link">
+              <span class="popup-icon">⚙️</span> Profile Settings
+            </a>
+            <div class="popup-divider"></div>
+            <button class="btn-popup-logout" (click)="logout()">
+              <span class="popup-icon">🚪</span> Sign Out
+            </button>
+          </div>
         </div>
       </div>
-      
-      <button class="btn-logout-nav" (click)="logout()">Sign Out</button>
     </ng-container>
   </div>
 </nav>

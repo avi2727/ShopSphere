@@ -1,4 +1,4 @@
-import { Component, signal, inject } from '@angular/core';
+import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -12,7 +12,7 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './cart.component.html',
   styleUrls: ['./cart.component.css']
 })
-export class CartComponent {
+export class CartComponent implements OnInit {
   cartService = inject(CartService);
   router = inject(Router);
   toastr = inject(ToastrService);
@@ -29,6 +29,18 @@ export class CartComponent {
   
   formError = signal<string>('');
   isSubmitting = signal<boolean>(false);
+
+  ngOnInit() {
+    this.loadProfileDetails();
+  }
+
+  loadProfileDetails() {
+    this.name = localStorage.getItem('userName') || '';
+    this.email = localStorage.getItem('userEmail') || '';
+    this.address = localStorage.getItem('userAddress') || '';
+    this.city = localStorage.getItem('userCity') || '';
+    this.zip = localStorage.getItem('userZip') || '';
+  }
 
   // Expose static mock signals for direct frontend representation
   cartItems = signal<any[]>([

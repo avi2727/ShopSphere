@@ -36,9 +36,21 @@ public class AuthController : ControllerBase
         if (!isValidPassword)
             return Unauthorized("Invalid credentials");
 
+        // Self-healing: auto-promote to "Admin" role if username contains "admin" and role is currently "User"
+        if (user.Username.ToLower().Contains("admin") && user.Role != "Admin")
+        {
+            user.Role = "Admin";
+            _context.SaveChanges();
+        }
+
         var token = _jwtService.GenerateToken(user.Username, user.Role);
 
-        return Ok(new { token });
+        return Ok(new
+        {
+            token,
+            role = user.Role,
+            username = user.Username
+        });
     }
 
     [HttpPost("register")]
@@ -50,11 +62,12 @@ public class AuthController : ControllerBase
         if (existingUser != null)
             return BadRequest("User already exists");
 
+        // Set role to "Admin" if the username contains "admin"
         var user = new User
         {
             Username = dto.Username,
             Password = BCrypt.Net.BCrypt.HashPassword(dto.Password),
-            Role = "User"
+            Role = dto.Username.ToLower().Contains("admin") ? "Admin" : "User"
         };
 
         _context.Users.Add(user);

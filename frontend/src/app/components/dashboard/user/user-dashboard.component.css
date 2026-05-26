@@ -23,7 +23,7 @@
   display: flex;
   flex-direction: column;
   position: fixed;
-  top: 0;
+  top: 80px;
   bottom: 0;
   left: 0;
   z-index: 100;
@@ -115,6 +115,7 @@
 .main-panel {
   flex: 1;
   margin-left: 280px;
+  margin-top: 80px;
   padding: 3rem 4%;
   box-sizing: border-box;
   display: flex;
@@ -442,4 +443,104 @@
 
 @media (max-width: 576px) {
   .metrics-grid { grid-template-columns: 1fr; }
+}
+
+/* Profile Form & Settings Styling */
+.settings-card {
+  grid-column: span 2;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(124, 58, 237, 0.15) !important;
+  box-shadow: 0 15px 30px rgba(124, 58, 237, 0.03);
+}
+
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.form-group input {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  padding: 0.8rem 1rem;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  color: #0f172a;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.01);
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.1), 0 4px 10px rgba(15, 23, 42, 0.02);
+  background: white;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-save-profile {
+  background: linear-gradient(135deg, #7c3aed, #db2777);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.85rem 2.25rem;
+  border-radius: 14px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: -0.2px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  box-shadow: 0 4px 14px 0 rgba(124, 58, 237, 0.3),
+              0 1px 3px 0 rgba(0, 0, 0, 0.05);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-save-profile:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px 0 rgba(124, 58, 237, 0.45),
+              0 4px 10px 0 rgba(219, 39, 119, 0.2);
+  filter: brightness(1.05);
+}
+
+.btn-save-profile:active {
+  transform: translateY(0) scale(0.97);
+  box-shadow: 0 2px 6px 0 rgba(124, 58, 237, 0.2);
+}
+
+@media (max-width: 576px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  .btn-save-profile {
+    width: 100%;
+    justify-content: center;
+  }
 }

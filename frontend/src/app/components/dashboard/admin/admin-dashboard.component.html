@@ -11,6 +11,9 @@
       <a routerLink="/products" class="nav-item">
         <span class="icon">💻</span> Product Inventory
       </a>
+      <a routerLink="/categories" class="nav-item">
+        <span class="icon">📁</span> Manage Categories
+      </a>
       <a (click)="activeTab.set('settings')" class="nav-item" [class.active]="activeTab() === 'settings'">
         <span class="icon">⚙️</span> Profile Settings
       </a>

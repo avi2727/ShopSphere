@@ -4,6 +4,7 @@
   <div class="nav-links">
     <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a>
     <a routerLink="/products" routerLinkActive="active">Catalog</a>
+    <a *ngIf="isLoggedIn() && isAdmin()" routerLink="/categories" routerLinkActive="active">Categories</a>
     <a *ngIf="isLoggedIn()" [routerLink]="isAdmin() ? '/admin-dashboard' : '/user-dashboard'" routerLinkActive="active">Dashboard</a>
   </div>
   
@@ -45,6 +46,25 @@
           </div>
           <div class="popup-divider"></div>
           <div class="popup-actions">
+            <!-- Mobile-only backup nav links -->
+            <div class="mobile-only-links" style="display: none; flex-direction: column; gap: 0.5rem; margin-bottom: 0.5rem;">
+              <a routerLink="/" (click)="closeProfilePopup()" class="popup-link">
+                🏠 Home
+              </a>
+              <a routerLink="/products" (click)="closeProfilePopup()" class="popup-link">
+                📦 Catalog
+              </a>
+            </div>
+
+            <!-- Admin quick-actions links -->
+            <a *ngIf="isAdmin()" routerLink="/categories" (click)="closeProfilePopup()" class="popup-link">
+              <span class="popup-icon">📁</span> Manage Categories
+            </a>
+            <a *ngIf="isAdmin()" routerLink="/products" (click)="closeProfilePopup()" class="popup-link">
+              <span class="popup-icon">🛠️</span> Manage Inventory
+            </a>
+            <div class="popup-divider" *ngIf="isAdmin()"></div>
+
             <a [routerLink]="isAdmin() ? '/admin-dashboard' : '/user-dashboard'" [queryParams]="{ tab: 'settings' }" (click)="closeProfilePopup()" class="popup-link">
               <span class="popup-icon">⚙️</span> Profile Settings
             </a>

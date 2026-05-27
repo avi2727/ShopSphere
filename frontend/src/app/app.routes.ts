@@ -8,11 +8,13 @@ import { CartComponent } from './components/cart/cart.component';
 import { OrderSuccessComponent } from './components/order-success/order-success.component';
 import { AdminDashboardComponent } from './components/dashboard/admin/admin-dashboard.component';
 import { UserDashboardComponent } from './components/dashboard/user/user-dashboard.component';
+import { CategoryComponent } from './components/category/category.component';
 
 export const routes: Routes = [
   { path: '', component: LandingPageComponent },
   { path: 'products', component: ProductsComponent },
   { path: 'products/:id', component: ProductDetailComponent },
+  { path: 'categories', component: CategoryComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'admin-dashboard', component: AdminDashboardComponent },
@@ -20,3 +22,5 @@ export const routes: Routes = [
   { path: 'cart', component: CartComponent },
   { path: 'order-success', component: OrderSuccessComponent },
 ];
+
+

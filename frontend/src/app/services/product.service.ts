@@ -44,24 +44,38 @@ export class ProductService {
     return this.http.post(this.apiUrl, product);
   }
 
-
+  // updateProduct: Purane product ke features aur details ko modify karne ke liye.
+  // Jab Admin "Save Product" click karta hai editing modal me, tab ye method call hota hai.
+  // Ye PUT request bhejta hai `http://localhost:5006/api/products/{id}` par payload body ke sath.
   updateProduct(id: number, product: any) {
     return this.http.put(`${this.apiUrl}/${id}`, product);
   }
 
+  // getProductById: Kisi single product ki dynamic detail fetch karne ke liye.
+  // Jab user product card par click karta hai aur dynamic route `/products/:id` open hota hai,
+  // tab ProductDetailComponent is service function ko hit karke backend se real-time specs fetch karta hai.
+  getProductById(id: number) {
+    return this.http.get(`${this.apiUrl}/${id}`);
+  }
 
-  // Products fetch karne ka method
+  // uploadImage: local device se choose kiye image assets ko secure dynamic directory me post karne ke liye.
+  // Multipart binary stream build karne ke liye FormData dynamic API object use kiya jata hai.
+  // [FromForm] binder hit karne ke liye 'file' key me binary payload append karke POST request `api/products/upload` par dispatch hoti hai.
+  uploadImage(file: File) {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post(`${this.apiUrl}/upload`, formData);
+  }
+
+  // getProducts: Catalog screen populate karne ke liye backend se sabhi products fetch karne ka primary function.
+  // GET request dispatch hoti hai aur response list items component observable trigger karti hai.
   getProducts() {
-
-    // GET request backend ko bhej raha hai
-
-    // Ye bhi Observable return karega
-    // Actual data subscribe() me milega
     return this.http.get(this.apiUrl);
   }
 
+  // deleteProduct: Kisi exist karne wale product ko dashboard se completely remove karne ke liye.
+  // HTTP DELETE action bhejta hai product id parameter ke sath, jo direct backend `ProductsController.DeleteProduct` method par hit hoti hai.
   deleteProduct(id: number) {
-    // DELETE API call
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
 }

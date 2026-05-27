@@ -61,8 +61,8 @@
                   {{ product.stockQuantity }}
                 </span>
               </td>
-              <td class="specs-cell" [title]="product.specifications">{{ product.specifications || 'No specifications' }}</td>
-              <td class="cat-cell">ID: {{ product.categoryId }}</td>
+              <td class="specs-cell" [title]="displaySpecs(product.specifications)">{{ displaySpecs(product.specifications) }}</td>
+              <td class="cat-cell">{{ getCategoryName(product.categoryId) }}</td>
               <td class="actions-cell">
                 <button class="btn-icon btn-edit" title="Edit Specs" (click)="openEditModal(product)">✏️</button>
                 <button class="btn-icon btn-delete" title="Delete Product" (click)="promptDelete(product)">🗑️</button>
@@ -160,11 +160,19 @@
           </div>
 
           <div class="form-group">
-            <label for="prodImage">Image URL</label>
-            <div class="input-wrapper">
-              <span class="input-icon">🖼️</span>
-              <input type="text" id="prodImage" name="imageUrl" [(ngModel)]="currentProduct.imageUrl"
-                placeholder="e.g. assets/images/custom_product.png" />
+            <label>Product Image</label>
+            <div class="image-upload-wrapper">
+              <!-- Preview Frame -->
+              <div class="upload-preview" *ngIf="currentProduct.imageUrl">
+                <img [src]="currentProduct.imageUrl" alt="Product Image Preview" class="preview-thumb">
+                <button type="button" class="btn-remove-img" (click)="currentProduct.imageUrl = ''">✕ Remove</button>
+              </div>
+              <!-- Upload Input Area -->
+              <div class="upload-dropzone" *ngIf="!currentProduct.imageUrl">
+                <span class="upload-icon">🖼️</span>
+                <span class="upload-text">{{ isUploading() ? 'Uploading...' : 'Choose Product Image (Max 5MB)' }}</span>
+                <input type="file" (change)="onFileSelected($event)" accept="image/*" class="file-input" [disabled]="isUploading()" />
+              </div>
             </div>
           </div>
 
@@ -178,11 +186,12 @@
           </div>
 
           <div class="form-group">
-            <label for="prodCategory">Category ID</label>
+            <label for="prodCategory">Category</label>
             <div class="input-wrapper">
               <span class="input-icon">📁</span>
-              <input type="number" id="prodCategory" name="categoryId" [(ngModel)]="currentProduct.categoryId"
-                placeholder="e.g. 1" required />
+              <select id="prodCategory" name="categoryId" [(ngModel)]="currentProduct.categoryId" required class="prod-select-element">
+                <option *ngFor="let cat of categoriesList()" [value]="cat.id">{{ cat.name }}</option>
+              </select>
             </div>
           </div>
         </div>

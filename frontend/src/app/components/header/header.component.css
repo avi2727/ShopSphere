@@ -333,4 +333,8 @@
 @media (max-width: 768px) {
   .navbar { padding: 1rem 4%; }
   .nav-links { display: none; }
+
+  .mobile-only-links {
+    display: flex !important;
+  }
 }

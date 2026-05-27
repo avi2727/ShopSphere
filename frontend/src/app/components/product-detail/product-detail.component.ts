@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { CartService } from '../../services/cart.service';
+import { ProductService } from '../../services/product.service';
 
 @Component({
   selector: 'app-product-detail',
@@ -112,11 +113,19 @@ export class ProductDetailComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private productService: ProductService
   ) {}
 
+  // ngOnInit: Details Page loader logic init.
+  // 1. Dynamic route router parameter 'id' read karta hai (`ActivatedRoute.paramMap`).
+  // 2. Database API endpoint `api/products/{id}` hit karega details fetch karne ke liye.
+  // 3. Agar response object me dynamic `jsonb` specifications structured objects hain, 
+  // to specifications key-value attributes list extract karke display table features construct karega.
+  // 4. Fallback Support: Agar local network slow ya API backend unreachable ho, 
+  // to custom ID checking laptopDatabase mockup assets data locally load karke display display karega taaki visual layout break na ho.
   ngOnInit(): void {
-    // Role parameter reading
+    // Role status check for admin control visibility setup
     const email = localStorage.getItem('userEmail') || '';
     let role = localStorage.getItem('userRole') || '';
     
@@ -127,42 +136,102 @@ export class ProductDetailComponent implements OnInit {
     
     this.isAdmin.set(role.toLowerCase() === 'admin');
 
-    // Route parameter reading
+    // ActivatedRoute.paramMap subscribe: Router path se change hone wala Product ID variable capture karne ke liye.
+    // Jab user dynamic URL '/products/3' hit karta hai, to idParam me '3' assign ho jata hai.
     this.route.paramMap.subscribe(params => {
       const idParam = params.get('id');
       const productId = idParam ? parseInt(idParam, 10) : 0;
       
-      // Look up inside local laptop catalog
+      // local mockup check - high fidelity visual content support
       const matched = this.laptopDatabase.find(p => p.id === productId);
-      
-      if (matched) {
-        this.product.set(matched);
-      } else {
-        // Fallback default mockup values if custom ID
-        this.product.set({
-          id: productId,
-          name: 'Premium Workstation Laptop',
-          price: '1,999.00',
-          image: 'assets/images/macbook_pro.png',
-          specs: 'Core Ultra 7 • 16" IPS • 16GB RAM • 512GB SSD',
-          description: 'A premium, high-tier configuration designed to maximize your development workflow and everyday productivity. Features dual-channel memory, expansive storage, and durable construction.',
-          brand: 'ShopSphere Core',
-          rating: 4.5,
-          reviewsCount: 15,
-          inStock: true,
-          features: [
+
+      // getProductById (product.service.ts) hit karega backend controllers endpoint fetch block target karne ke liye.
+      this.productService.getProductById(productId).subscribe({
+        next: (data: any) => {
+          // jsonb dynamic key-values specifications rendering controller
+          let specsText = 'High Performance Workstation';
+          let featuresList = [
             { label: 'Processor', value: 'High-Performance Multicore CPU' },
             { label: 'Memory', value: '16GB High-Speed System RAM' },
             { label: 'Storage', value: '512GB Solid State Drive (SSD)' },
             { label: 'Display', value: '15.6" Full HD Anti-Glare Widescreen' },
             { label: 'Warranty', value: '1-Year Premium Store Protection' }
-          ]
-        });
-      }
-      this.loading.set(false);
+          ];
+
+          // Specifications parse block: prevents invalid JSON model formatting errors on UI.
+          if (data.specifications) {
+            try {
+              const parsed = JSON.parse(data.specifications);
+              if (typeof parsed === 'string') {
+                specsText = parsed;
+                featuresList = [
+                  { label: 'Processor', value: 'High-Performance Multicore CPU' },
+                  { label: 'Memory', value: '16GB High-Speed System RAM' },
+                  { label: 'Storage', value: '512GB Solid State Drive (SSD)' },
+                  { label: 'Specifications', value: parsed }
+                ];
+              } else if (typeof parsed === 'object' && parsed !== null) {
+                specsText = Object.entries(parsed).map(([k, v]) => `${k}: ${v}`).join(' • ');
+                featuresList = Object.entries(parsed).map(([k, v]) => ({ label: k, value: String(v) }));
+              }
+            } catch (e) {
+              specsText = data.specifications;
+              featuresList = [
+                { label: 'Specifications', value: data.specifications }
+              ];
+            }
+          }
+
+          // signal update - UI instantly reacts to refresh details page
+          this.product.set({
+            id: data.id,
+            name: data.name,
+            price: typeof data.price === 'number' ? data.price.toFixed(2) : data.price,
+            image: data.imageUrl || (matched ? matched.image : 'assets/images/macbook_pro.png'),
+            specs: specsText,
+            description: data.description || 'No description available.',
+            brand: matched ? matched.brand : 'ShopSphere Core',
+            rating: matched ? matched.rating : 4.5,
+            reviewsCount: matched ? matched.reviewsCount : 15,
+            inStock: data.stockQuantity > 0,
+            features: featuresList
+          });
+          this.loading.set(false);
+        },
+        error: (error: any) => {
+          console.error('Error loading product from API, falling back', error);
+          // API fail check fallback handling: uses local laptop database or premium default layout templates.
+          if (matched) {
+            this.product.set(matched);
+          } else {
+            // Default mockup workstation layout when specific id not found inside local matched array.
+            this.product.set({
+              id: productId,
+              name: 'Premium Workstation Laptop',
+              price: '1,999.00',
+              image: 'assets/images/macbook_pro.png',
+              specs: 'Core Ultra 7 • 16" IPS • 16GB RAM • 512GB SSD',
+              description: 'A premium, high-tier configuration designed to maximize your development workflow and everyday productivity. Features dual-channel memory, expansive storage, and durable construction.',
+              brand: 'ShopSphere Core',
+              rating: 4.5,
+              reviewsCount: 15,
+              inStock: true,
+              features: [
+                { label: 'Processor', value: 'High-Performance Multicore CPU' },
+                { label: 'Memory', value: '16GB High-Speed System RAM' },
+                { label: 'Storage', value: '512GB Solid State Drive (SSD)' },
+                { label: 'Display', value: '15.6" Full HD Anti-Glare Widescreen' },
+                { label: 'Warranty', value: '1-Year Premium Store Protection' }
+              ]
+            });
+          }
+          this.loading.set(false);
+        }
+      });
     });
   }
 
+  // addToCart: Navigation trigger routing shopping cart redirection console.
   addToCart() {
     this.router.navigate(['/cart']);
   }

@@ -1,0 +1,117 @@
+<div class="category-container" *ngIf="isAdmin()">
+  <!-- Main Content Console -->
+  <main class="main-content">
+    <div class="page-header">
+      <div class="title-section">
+        <h1>Category <span>Management</span></h1>
+        <p>Organize, create and edit catalog category tags from this central console.</p>
+      </div>
+      <div class="actions-section">
+        <button class="btn-primary" (click)="openAddModal()">+ Add Category</button>
+      </div>
+    </div>
+
+    <!-- Glassmorphic Category Grid Table -->
+    <div class="table-card">
+      <div class="table-wrapper">
+        <table class="premium-table">
+          <thead>
+            <tr>
+              <th class="w-id">Category ID</th>
+              <th class="w-name">Category Name</th>
+              <th class="w-actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Empty state row -->
+            <tr *ngIf="categories().length === 0">
+              <td colspan="3" class="empty-row-cell">
+                <div class="empty-state">
+                  <div class="empty-icon">📁</div>
+                  <h3>No Categories Found</h3>
+                  <p>Your product categories database is empty. Click "+ Add Category" to create your first one.</p>
+                  <button class="btn-cta-empty" (click)="openAddModal()">+ Add New Category</button>
+                </div>
+              </td>
+            </tr>
+            <!-- Active Data Rows -->
+            <tr *ngFor="let category of categories()">
+              <td>#{{ category.id }}</td>
+              <td class="category-name-cell">{{ category.name }}</td>
+              <td class="actions-cell">
+                <button class="btn-icon btn-edit" title="Edit Category" (click)="openEditModal(category)">✏️</button>
+                <button class="btn-icon btn-delete" title="Delete Category" (click)="promptDelete(category)">🗑️</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- Add/Edit Category Modal Layer -->
+  <div class="modal-overlay" *ngIf="isModalOpen()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>{{ isEditing() ? 'Edit' : 'Add' }} <span>Category</span></h2>
+        <button class="btn-close-modal" (click)="closeModal()">×</button>
+      </div>
+
+      <form (ngSubmit)="saveCategory()" class="modal-form">
+        <!-- Error Banner -->
+        <div class="error-banner" *ngIf="formError()">
+          <span class="error-icon">⚠️</span>
+          <span class="error-text">{{ formError() }}</span>
+        </div>
+
+        <div class="modal-form-body">
+          <div class="form-group">
+            <label for="catName">Category Name</label>
+            <div class="input-wrapper">
+              <span class="input-icon">🏷️</span>
+              <input type="text" id="catName" name="name" [(ngModel)]="currentCategory.name"
+                placeholder="e.g. Workstations, Accessories" required />
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-cancel" (click)="closeModal()">Cancel</button>
+          <button type="submit" class="btn-save">
+            {{ isEditing() ? 'Save Changes' : 'Create Category' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal Layer -->
+  <div class="modal-overlay" *ngIf="isDeleteModalOpen()">
+    <div class="modal-card delete-modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Confirm <span>Deletion</span></h2>
+        <button class="btn-close-modal" (click)="cancelDelete()">×</button>
+      </div>
+
+      <div class="delete-modal-body">
+        <div class="warning-icon-wrapper">⚠️</div>
+        <h3>Are you sure?</h3>
+        <p>You are about to permanently delete the category <strong>{{ categoryNameToDelete() }}</strong>. All products mapped to this category may fail to render correctly.</p>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" (click)="cancelDelete()">Cancel</button>
+        <button type="button" class="btn-delete-confirm" (click)="confirmDelete()">
+          Permanently Delete
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-bottom">
+      &copy; 2026 ShopSphere. All rights reserved.
+    </div>
+  </footer>
+</div>

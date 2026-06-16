@@ -58,6 +58,21 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 var app = builder.Build();
 
+// Seed the database at startup
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<AppDbContext>();
+        DbSeeder.Seed(context);
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"An error occurred while seeding the database: {ex.Message}");
+    }
+}
+
 // Configure the HTTP request pipeline:
 // Development environment me Swagger UI dashboards open karne ke liye check.
 if (app.Environment.IsDevelopment())

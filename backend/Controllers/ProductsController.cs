@@ -110,9 +110,9 @@ namespace MyDotNetApi.Controllers
         // GET: api/products/{id}
         // Kisi single product ki dynamic detail dynamic routing path se load karne ke liye (jaise detail page load hone par).
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetProduct(int id)
+        public async Task<IActionResult> GetProduct(int product_id)
         {
-            var product = await _context.Products.FindAsync(id);
+            var product = await _context.Products.FindAsync(product_id);
 
             if (product == null)
             {
@@ -136,8 +136,9 @@ namespace MyDotNetApi.Controllers
         // Multi-part Form Data ke roop me local computer se image upload karne ka endpoint.
         // [FromForm]: Model binder ko explicitly batata hai ki binary image data multi-part form payload se bind karna hai.
         [HttpPost("upload")]
-        public async Task<IActionResult> UploadImage([FromForm] IFormFile file)
-        {
+            [Consumes("multipart/form-data")]
+            public async Task<IActionResult> UploadImage(IFormFile file)
+                    {
             if (file == null || file.Length == 0)
             {
                 return BadRequest("No file uploaded.");

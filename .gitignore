@@ -31,3 +31,10 @@ yarn-error.log*
 # --- OS specific files ---
 .DS_Store
 Thumbs.db
+
+# --- Configuration files ---
+appsettings.json
+appsettings.*.json
+*.conf
+*.config
+

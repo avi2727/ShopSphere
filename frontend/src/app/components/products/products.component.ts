@@ -39,7 +39,7 @@ export class ProductsComponent implements OnInit {
   formError = signal<string>('');
   // isAdmin: true tab jab logged-in user admin role holder ho (ye edit/delete actions block permissions define karta hai).
   isAdmin = signal<boolean>(false);
-  
+
   // isDeleteModalOpen: Safe double-confirm warning delete modal block trigger check.
   isDeleteModalOpen = signal<boolean>(false);
   // productIdToDelete: Selected element variable safe identity track karne ke liye.
@@ -79,13 +79,13 @@ export class ProductsComponent implements OnInit {
     this.loadCategoriesList();
     const email = localStorage.getItem('userEmail') || '';
     let role = localStorage.getItem('userRole') || '';
-    
+
     // Auto role sync: default demo admin/user setup handle karne ke liye.
     if (!role && email) {
       role = email.toLowerCase().includes('admin') ? 'Admin' : 'User';
       localStorage.setItem('userRole', role);
     }
-    
+
     this.isAdmin.set(role.toLowerCase() === 'admin');
   }
 
@@ -96,7 +96,7 @@ export class ProductsComponent implements OnInit {
       next: (response: any) => {
         const list = [...(response.$values || response)];
         this.categoriesList.set(list);
-        
+
         // Auto-heal empty categories list for demo support
         if (list.length === 0) {
           // Agar database me categories blank hain, to automatic base Category generate karke default list set karenge.
@@ -146,7 +146,7 @@ export class ProductsComponent implements OnInit {
     if (!this.isAdmin()) return;
     this.isEditing.set(true);
     this.currentProduct = { ...product }; // clone product
-    
+
     // Specifications formatting cleaner: jsonb validation alerts filter out karne ke liye.
     if (this.currentProduct.specifications) {
       try {
@@ -158,7 +158,7 @@ export class ProductsComponent implements OnInit {
         // dynamic error ignore - original as-is safe copy.
       }
     }
-    
+
     this.formError.set('');
     this.isModalOpen.set(true);
   }
@@ -338,7 +338,7 @@ export class ProductsComponent implements OnInit {
   confirmDelete() {
     const id = this.productIdToDelete();
     if (id === null) return;
-    
+
     this.productService.deleteProduct(id).subscribe({
       next: () => {
         this.products.update(all => all.filter(p => p.id !== id));
@@ -391,7 +391,9 @@ export class ProductsComponent implements OnInit {
   }
 
   // quickAddToCart: Checkout processes direct redirection console trigger parameters.
-  quickAddToCart(product: any) {
-    this.router.navigate(['/cart']);
+  addToCart(product: any) {
+    this.cartService.addToCart(product);
+    this.toastr.success('Product added to cart');
+    // this.router.navigate(['/cart']);
   }
 }

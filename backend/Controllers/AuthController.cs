@@ -43,7 +43,7 @@ public class AuthController : ControllerBase
             _context.SaveChanges();
         }
 
-        var token = _jwtService.GenerateToken(user.Username, user.Role);
+        var token = _jwtService.GenerateToken(user.Id, user.Username, user.Role);
 
         return Ok(new
         {

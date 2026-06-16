@@ -469,6 +469,8 @@
   color: #0f172a;
   outline: none;
   transition: all 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .checkout-form input:focus {

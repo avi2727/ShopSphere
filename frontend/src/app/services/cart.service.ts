@@ -57,8 +57,8 @@ export class CartService {
       existing.quantity += 1;
       this.cartItems.set(items);
     } else {
-      const priceVal = typeof product.price === 'string' 
-        ? parseFloat(product.price.replace(/,/g, '')) 
+      const priceVal = typeof product.price === 'string'
+        ? parseFloat(product.price.replace(/,/g, ''))
         : product.price;
 
       this.cartItems.set([
@@ -67,7 +67,7 @@ export class CartService {
           id: product.id,
           name: product.name,
           price: priceVal,
-          image: product.image || 'assets/images/macbook_pro.png',
+          image: product.imageUrl || 'assets/images/macbook_pro.png',
           specs: product.specs || '',
           quantity: 1
         }

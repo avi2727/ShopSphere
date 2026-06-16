@@ -5,7 +5,7 @@
       <div class="title-section">
         <h1 *ngIf="isAdmin()">Product <span>Inventory</span></h1>
         <h1 *ngIf="!isAdmin()">All <span>Products</span></h1>
-        
+
         <p *ngIf="isAdmin()">Manage and supervise your catalog from a centralized cockpit console.</p>
         <p *ngIf="!isAdmin()">Browse our premium, hand-picked product models curated for your workflow.</p>
       </div>
@@ -13,7 +13,8 @@
         <button class="btn-primary" (click)="openAddModal()" *ngIf="isAdmin()">+ Add Product</button>
         <div class="search-box">
           <span class="search-icon">🔍</span>
-          <input type="text" placeholder="Search by name or ID..." [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)" />
+          <input type="text" placeholder="Search by name or ID..." [ngModel]="searchQuery()"
+            (ngModelChange)="searchQuery.set($event)" />
         </div>
       </div>
     </div>
@@ -42,7 +43,8 @@
                 <div class="empty-state">
                   <div class="empty-icon">📦</div>
                   <h3>No Products Found</h3>
-                  <p>Your filter did not match any products, or inventory is empty. Click "+ Add Product" to add a new one.</p>
+                  <p>Your filter did not match any products, or inventory is empty. Click "+ Add Product" to add a new
+                    one.</p>
                   <button class="btn-cta-empty" (click)="openAddModal()">+ Add New Product</button>
                 </div>
               </td>
@@ -51,7 +53,8 @@
             <tr *ngFor="let product of filteredProducts()">
               <td>#{{ product.id }}</td>
               <td class="img-cell">
-                <img [src]="product.imageUrl || 'assets/images/default_product.png'" alt="Product Thumbnail" class="table-thumb" />
+                <img [src]="product.imageUrl || 'assets/images/default_product.png'" alt="Product Thumbnail"
+                  class="table-thumb" />
               </td>
               <td class="product-name-cell">{{ product.name }}</td>
               <td class="price-cell">{{ product.price | currency }}</td>
@@ -61,7 +64,8 @@
                   {{ product.stockQuantity }}
                 </span>
               </td>
-              <td class="specs-cell" [title]="displaySpecs(product.specifications)">{{ displaySpecs(product.specifications) }}</td>
+              <td class="specs-cell" [title]="displaySpecs(product.specifications)">{{
+                displaySpecs(product.specifications) }}</td>
               <td class="cat-cell">{{ getCategoryName(product.categoryId) }}</td>
               <td class="actions-cell">
                 <button class="btn-icon btn-edit" title="Edit Specs" (click)="openEditModal(product)">✏️</button>
@@ -86,7 +90,7 @@
       <div class="products-grid-layout" *ngIf="filteredProducts().length > 0">
         <div class="product-grid-card" *ngFor="let product of filteredProducts()">
           <div class="card-img-wrapper">
-            <img [src]="getLaptopImage(product)" alt="Product Design">
+            <img [src]="product.imageUrl" alt="Product Design">
             <span class="badge-tag">Premium Edition</span>
           </div>
           <div class="card-body">
@@ -95,10 +99,13 @@
             <div class="pricing-console-row">
               <span class="price-val">{{ product.price | currency }}</span>
               <span class="tax-note">VAT Inc.</span>
+              <span class="stock-badge" [class.low-stock]="product.stockQuantity <= 5">
+                In stock {{ product.stockQuantity }}
+              </span>
             </div>
             <div class="card-action-btns">
               <button class="btn-view-details" [routerLink]="['/products', product.id]">👁️ View Details</button>
-              <button class="btn-quick-add" (click)="quickAddToCart(product)">🛒 Add to Cart</button>
+              <button class="btn-quick-add" (click)="addToCart(product)">🛒 Add to Cart</button>
             </div>
           </div>
         </div>
@@ -136,8 +143,8 @@
             <label for="prodPrice">Price (USD)</label>
             <div class="input-wrapper">
               <span class="input-icon">💲</span>
-              <input type="number" id="prodPrice" name="price" [(ngModel)]="currentProduct.price" placeholder="e.g. 1999.99"
-                step="0.01" required />
+              <input type="number" id="prodPrice" name="price" [(ngModel)]="currentProduct.price"
+                placeholder="e.g. 1999.99" step="0.01" required />
             </div>
           </div>
 
@@ -171,7 +178,8 @@
               <div class="upload-dropzone" *ngIf="!currentProduct.imageUrl">
                 <span class="upload-icon">🖼️</span>
                 <span class="upload-text">{{ isUploading() ? 'Uploading...' : 'Choose Product Image (Max 5MB)' }}</span>
-                <input type="file" (change)="onFileSelected($event)" accept="image/*" class="file-input" [disabled]="isUploading()" />
+                <input type="file" (change)="onFileSelected($event)" accept="image/*" class="file-input"
+                  [disabled]="isUploading()" />
               </div>
             </div>
           </div>
@@ -189,7 +197,8 @@
             <label for="prodCategory">Category</label>
             <div class="input-wrapper">
               <span class="input-icon">📁</span>
-              <select id="prodCategory" name="categoryId" [(ngModel)]="currentProduct.categoryId" required class="prod-select-element">
+              <select id="prodCategory" name="categoryId" [(ngModel)]="currentProduct.categoryId" required
+                class="prod-select-element">
                 <option *ngFor="let cat of categoriesList()" [value]="cat.id">{{ cat.name }}</option>
               </select>
             </div>
@@ -219,7 +228,8 @@
       <div class="delete-modal-body">
         <div class="warning-icon-wrapper">⚠️</div>
         <h3>Are you sure?</h3>
-        <p>You are about to permanently delete <strong>{{ productNameToDelete() }}</strong> from the inventory catalog. This action is irreversible.</p>
+        <p>You are about to permanently delete <strong>{{ productNameToDelete() }}</strong> from the inventory catalog.
+          This action is irreversible.</p>
       </div>
 
       <div class="modal-actions">

@@ -9,18 +9,19 @@ import { OrderSuccessComponent } from './components/order-success/order-success.
 import { AdminDashboardComponent } from './components/dashboard/admin/admin-dashboard.component';
 import { UserDashboardComponent } from './components/dashboard/user/user-dashboard.component';
 import { CategoryComponent } from './components/category/category.component';
+import { authGuard, adminGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   { path: '', component: LandingPageComponent },
   { path: 'products', component: ProductsComponent },
   { path: 'products/:id', component: ProductDetailComponent },
-  { path: 'categories', component: CategoryComponent },
+  { path: 'categories', component: CategoryComponent, canActivate: [adminGuard] },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-  { path: 'admin-dashboard', component: AdminDashboardComponent },
-  { path: 'user-dashboard', component: UserDashboardComponent },
-  { path: 'cart', component: CartComponent },
-  { path: 'order-success', component: OrderSuccessComponent },
+  { path: 'admin-dashboard', component: AdminDashboardComponent, canActivate: [adminGuard] },
+  { path: 'user-dashboard', component: UserDashboardComponent, canActivate: [authGuard] },
+  { path: 'cart', component: CartComponent, canActivate: [authGuard] },
+  { path: 'order-success', component: OrderSuccessComponent, canActivate: [authGuard] },
 ];
 
 
